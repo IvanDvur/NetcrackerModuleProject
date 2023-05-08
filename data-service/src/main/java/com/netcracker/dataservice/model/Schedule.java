@@ -28,8 +28,9 @@ public class Schedule {
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
     private SendingOrder order;
-
+    @Enumerated(EnumType.STRING)
     private SendStatus emailStatus = SendStatus.WAITING;
+    @Enumerated(EnumType.STRING)
     private SendStatus smsStatus = SendStatus.WAITING;
     private Integer retriesCount = 0;
 

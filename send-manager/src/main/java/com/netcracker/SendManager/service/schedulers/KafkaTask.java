@@ -9,25 +9,19 @@ import org.springframework.web.client.RestTemplate;
 
 public class KafkaTask implements Runnable {
 
-    private String url;
     private final Producer producer;
     private final OrderScheduler orderScheduler;
     private final MessageDto messageDto;
     private final Schedule schedule;
-    private RestTemplate restTemplate;
 
-    public KafkaTask(String url,
-                     RestTemplate restTemplate,
-                     Producer producer,
+    public KafkaTask(Producer producer,
                      OrderScheduler orderScheduler,
                      MessageDto messageDto,
                      Schedule schedule) {
         this.producer = producer;
-        this.restTemplate = restTemplate;
         this.orderScheduler = orderScheduler;
         this.messageDto = messageDto;
         this.schedule = schedule;
-        this.url = url;
     }
 
     @Override
@@ -48,26 +42,17 @@ public class KafkaTask implements Runnable {
                 case "SMS":
                     producer.sendMessage(
                             new GenericDto(messageDto.getSmsAdvertisement(), messageDto.getClientsDtos(),schedule),
-                            "t.sms",
-                            schedule,
-                            url,
-                            restTemplate);
+                            "t.sms",schedule);
                     break;
                 case "EMAIL":
                     producer.sendMessage(
                             new GenericDto(messageDto.getEmailAdvertisement(), messageDto.getClientsDtos(),schedule),
-                            "t.email",
-                            schedule,
-                            url,
-                            restTemplate);
+                            "t.email",schedule);
                     break;
                 case "MESSENGER":
                     producer.sendMessage(
                             new GenericDto(messageDto.getMessengerAdvertisement(), messageDto.getClientsDtos(),schedule),
-                            "t.messenger",
-                            schedule,
-                            url,
-                            restTemplate);
+                            "t.messenger",schedule);
                     break;
             }
         }

@@ -9,7 +9,9 @@ import com.netcracker.SendManager.dto.MessageDto;
 import com.netcracker.SendManager.producer.Producer;
 import com.netcracker.SendManager.service.schedulers.KafkaTask;
 import com.netcracker.SendManager.service.schedulers.OrderScheduler;
+import dto.GenericDto;
 import dto.SendStatus;
+import dto.SmsAdvertisement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +47,14 @@ public class KafkaTopicSplitterService {
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public void splitAdvertisementOnTopic(String configDto) {
+    public void splitAdvertisementOnTopic(String orderDto) {
         try {
-            List<MessageDto> data = objectMapper.readValue(configDto, new TypeReference<>() {
+            List<MessageDto> data = objectMapper.readValue(orderDto, new TypeReference<>() {
             });
             for (MessageDto messageDto : data) {
                 messageDto.getSchedule().forEach(x -> {
                     orderScheduler.scheduleATask(x,
-                            new KafkaTask(url, restTemplate, producer, orderScheduler, messageDto, x));
+                            new KafkaTask(producer, orderScheduler, messageDto, x));
                     x.setEmailStatus(SendStatus.PROCESSING);
                     x.setSmsStatus(SendStatus.PROCESSING);
                     restTemplate.put(url,x, ResponseEntity.class);
@@ -62,4 +64,22 @@ public class KafkaTopicSplitterService {
             e.printStackTrace();
         }
     }
+
+    public void processFailedMessage(String errorOrderDto){
+        try {
+            List<MessageDto> data = objectMapper.readValue(errorOrderDto, new TypeReference<>() {
+            });
+            for(MessageDto messageDto : data){
+                messageDto.getSchedule().forEach(x->{
+                    if(x.getSmsStatus().equals(SendStatus.FAILED)){
+                        GenericDto<SmsAdvertisement> dto = new GenericDto<>(messageDto.getSmsAdvertisement(),messageDto.getClientsDtos(),x);
+                    }
+                });
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

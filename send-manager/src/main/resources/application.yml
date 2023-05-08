@@ -12,6 +12,7 @@ spring:
     properties:
       spring.deserializer.key.delegate.class:  org.apache.kafka.common.serialization.StringDeserializer
       spring.deserializer.value.delegate.class:   org.springframework.kafka.support.serializer.JsonDeserializer
+      spring.json.trusted.packages: "*"
 
 logging:
   level:
@@ -26,5 +27,9 @@ logging:
 rest:
   address: http://localhost:8080/order
   callback_address: http://localhost:8080/schedule
-
+  retry_address: http://localhost:8080/schedule/retry
+  expired_address: http://localhost:8080/schedule/expired
+service:
+  medium_load: 10
+  high_load: 20
 
