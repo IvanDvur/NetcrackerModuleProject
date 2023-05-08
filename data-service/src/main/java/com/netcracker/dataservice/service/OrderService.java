@@ -112,9 +112,8 @@ public class OrderService {
                 dt.getDayOfMonth(),
                 dt.getHour(),
                 dt.getMinute());
-        List<Schedule> schedules = scheduleRepo.findAllByTimeToSendBetweenAndSendStatusOrSendStatus(dt, timeOfRequest.plusMinutes(30),
-                SendStatus.WAITING,
-                SendStatus.FAILED);
+        List<Schedule> schedules = scheduleRepo.findAllByTimeToSendBetweenAndEmailStatusAndSmsStatus(dt, timeOfRequest.plusMinutes(30),
+                SendStatus.WAITING,SendStatus.WAITING);
         Set<SendingOrder> orders = schedules.stream().map(x -> x.getOrder()).collect(Collectors.toSet());
         List<OrderDto> orderDtos = new ArrayList<>();
 
@@ -122,15 +121,13 @@ public class OrderService {
             Set<Schedule> timeToSend = c.getSchedule()
                     .stream()
                     .filter(s -> s.getTimeToSend().isBefore(timeOfRequest.plusMinutes(30))
-                            && s.getTimeToSend().isAfter(timeOfRequest) || s.getSendStatus().equals(SendStatus.FAILED))
+                            && s.getTimeToSend().isAfter(timeOfRequest))
                     .collect(Collectors.toSet());
             orderDtos.add(OrderDto.convertToDto(c, timeToSend));
         }
         if (orders.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-//        Orders.forEach(Order -> orderDtos.add(OrderDto.convertToDto(Order)));
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
 }

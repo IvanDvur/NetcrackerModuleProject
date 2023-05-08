@@ -152,7 +152,9 @@ public class UpdateService {
      */
     public void updateSchedule(Schedule schedule) {
         Schedule scheduleToUpdate = scheduleRepo.findById(schedule.getId()).get();
-        scheduleToUpdate.setSendStatus(schedule.getSendStatus());
+        scheduleToUpdate.setEmailStatus(schedule.getEmailStatus());
+        scheduleToUpdate.setSmsStatus(schedule.getSmsStatus());
+        scheduleToUpdate.setRetriesCount(schedule.getRetriesCount());
         scheduleRepo.save(scheduleToUpdate);
     }
 }

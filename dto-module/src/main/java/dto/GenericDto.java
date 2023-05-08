@@ -4,25 +4,25 @@ import java.util.Set;
 
 public class GenericDto<T> {
 
-    public T advertisement;
-    public Set<ClientDto> clientDtoSet;
-    public String scheduleId;
+    private T advertisement;
+    private Set<ClientDto> clientDtoSet;
+    private Schedule schedule;
 
-    public GenericDto(T advertisement, Set<ClientDto> clientDtoSet,String scheduleId) {
+    public GenericDto(T advertisement, Set<ClientDto> clientDtoSet,Schedule schedule) {
         this.advertisement = advertisement;
         this.clientDtoSet = clientDtoSet;
-        this.scheduleId = scheduleId;
+        this.schedule = schedule;
     }
 
     public GenericDto() {
     }
 
-    public String getScheduleId() {
-        return scheduleId;
+    public Schedule getSchedule() {
+        return schedule;
     }
 
-    public void setScheduleId(String scheduleId) {
-        this.scheduleId = scheduleId;
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 
     public T getAdvertisement() {
@@ -46,6 +46,7 @@ public class GenericDto<T> {
         return "GenericDto{" +
                 "advertisement=" + advertisement +
                 ", clientDtoSet=" + clientDtoSet +
+                ", schedule=" + schedule +
                 '}';
     }
 }

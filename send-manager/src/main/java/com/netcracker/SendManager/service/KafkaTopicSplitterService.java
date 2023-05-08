@@ -53,7 +53,8 @@ public class KafkaTopicSplitterService {
                 messageDto.getSchedule().forEach(x -> {
                     orderScheduler.scheduleATask(x,
                             new KafkaTask(url, restTemplate, producer, orderScheduler, messageDto, x));
-                    x.setSendStatus(SendStatus.PROCESSING);
+                    x.setEmailStatus(SendStatus.PROCESSING);
+                    x.setSmsStatus(SendStatus.PROCESSING);
                     restTemplate.put(url,x, ResponseEntity.class);
                 });
             }

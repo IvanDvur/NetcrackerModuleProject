@@ -19,19 +19,28 @@ public class Producer{
 
     private final KafkaTemplate<String, GenericDto> kafkaTemplate;
 
-
     public void sendMessage(GenericDto dto, String topic, Schedule schedule,String url,RestTemplate restTemplate){
         kafkaTemplate.send(topic,dto).addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {
-                schedule.setSendStatus(SendStatus.FAILED);
+                if(topic.equals("t.sms")){
+                    schedule.setSmsStatus(SendStatus.FAILED);
+                }
+                else if(topic.equals("t.email")){
+                    schedule.setEmailStatus(SendStatus.FAILED);
+                }
                 restTemplate.put(url, schedule, ResponseEntity.class);
                 log.info("Failed to send dto {}", dto);
             }
 
             @Override
             public void onSuccess(SendResult<String, GenericDto> result) {
-                schedule.setSendStatus(SendStatus.PROCESSED);
+                if(topic.equals("t.sms")){
+                    schedule.setSmsStatus(SendStatus.PROCESSED);
+                }
+                else if(topic.equals("t.email")){
+                    schedule.setEmailStatus(SendStatus.PROCESSED);
+                }
                 restTemplate.put(url, schedule, ResponseEntity.class);
                 log.info("Successfuly sent message to sender-service {}",dto);
             }

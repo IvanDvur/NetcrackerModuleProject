@@ -29,14 +29,18 @@ public class Schedule {
     @ManyToOne(cascade = CascadeType.PERSIST)
     private SendingOrder order;
 
-    private SendStatus sendStatus = SendStatus.WAITING;
+    private SendStatus emailStatus = SendStatus.WAITING;
+    private SendStatus smsStatus = SendStatus.WAITING;
+    private Integer retriesCount = 0;
 
     @Override
     public String toString() {
         return "Schedule{" +
                 "id=" + id +
                 ", timeToSend=" + timeToSend +
-                ", sendStatus=" + sendStatus +
+                ", emailStatus=" + emailStatus +
+                ", smsStatus=" + smsStatus +
+                ", retriesCount=" + retriesCount +
                 '}';
     }
 }

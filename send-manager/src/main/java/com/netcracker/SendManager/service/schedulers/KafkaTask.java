@@ -47,7 +47,7 @@ public class KafkaTask implements Runnable {
             switch (sendType) {
                 case "SMS":
                     producer.sendMessage(
-                            new GenericDto(messageDto.getSmsAdvertisement(), messageDto.getClientsDtos(),schedule.getId().toString()),
+                            new GenericDto(messageDto.getSmsAdvertisement(), messageDto.getClientsDtos(),schedule),
                             "t.sms",
                             schedule,
                             url,
@@ -55,7 +55,7 @@ public class KafkaTask implements Runnable {
                     break;
                 case "EMAIL":
                     producer.sendMessage(
-                            new GenericDto(messageDto.getEmailAdvertisement(), messageDto.getClientsDtos(),schedule.getId().toString()),
+                            new GenericDto(messageDto.getEmailAdvertisement(), messageDto.getClientsDtos(),schedule),
                             "t.email",
                             schedule,
                             url,
@@ -63,7 +63,7 @@ public class KafkaTask implements Runnable {
                     break;
                 case "MESSENGER":
                     producer.sendMessage(
-                            new GenericDto(messageDto.getMessengerAdvertisement(), messageDto.getClientsDtos(),schedule.getId().toString()),
+                            new GenericDto(messageDto.getMessengerAdvertisement(), messageDto.getClientsDtos(),schedule),
                             "t.messenger",
                             schedule,
                             url,

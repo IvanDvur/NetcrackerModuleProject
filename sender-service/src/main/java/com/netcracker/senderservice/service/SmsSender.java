@@ -1,24 +1,30 @@
 package com.netcracker.senderservice.service;
 
 
-import dto.ClientDto;
-import dto.GenericDto;
-import dto.SmsAdvertisement;
+import com.netcracker.senderservice.producer.Producer;
+import dto.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 
 @Component
 public class SmsSender {
+    @Value("${service.max_retries_count}")
+    private Integer maxRetriesCount;
+    private Producer producer;
 
-    public static boolean isNotFailed = true;
+    public SmsSender(Producer producer) {
+        this.producer = producer;
+    }
 
     public void send(GenericDto<SmsAdvertisement> advertisment) {
-
         SmsAdvertisement smsAdvertisement = advertisment.getAdvertisement();
+        Schedule schedule = advertisment.getSchedule();
         try {
             // Задаем параметры запроса
             MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
@@ -26,12 +32,10 @@ public class SmsSender {
             requestBody.add("psw", "6qJLab3b");
             requestBody.add("time", "0");
             requestBody.add("mes", smsAdvertisement.getText());
-            // SmsAdvertisement a = advertisment.getAdvertisement();
 
             for (ClientDto clientDto : advertisment.getClientDtoSet()) {
                 requestBody.add("phones", clientDto.getPhoneNumber() + ";");
             }
-
             // Формируем заголовки запроса
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -42,7 +46,19 @@ public class SmsSender {
             // Отправляем запрос на указанный URL с заданными параметрами и получаем ответ в виде строки
             ResponseEntity<String> response = restTemplate.exchange("https://smsc.ru/sys/send.php", HttpMethod.POST, entity, String.class);
             System.out.println("Response: " + response.getBody());
-        } catch (Exception e) {
+            schedule.setSmsStatus(SendStatus.SENT);
+            producer.sendMessage("t.success",schedule);
+
+        } catch (RestClientException e) {
+            if (schedule.getRetriesCount() < maxRetriesCount) {
+                schedule.setSmsStatus(SendStatus.NOT_SENT);
+                schedule.setRetriesCount(schedule.getRetriesCount() + 1);
+                producer.sendMessage("t.error", schedule);
+
+            }else{
+                schedule.setSmsStatus(SendStatus.EXPIRED);
+                producer.sendMessage("t.error", schedule);
+            }
             e.printStackTrace();
         }
 

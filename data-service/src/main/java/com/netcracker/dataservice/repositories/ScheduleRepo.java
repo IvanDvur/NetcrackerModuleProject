@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface ScheduleRepo extends CrudRepository<Schedule, UUID> {
 
-    List<Schedule> findAllByTimeToSendBetweenAndSendStatusOrSendStatus(LocalDateTime dateTimeOfRequest, LocalDateTime endRange, SendStatus waitingStatus,SendStatus failedStatus);
+    List<Schedule> findAllByTimeToSendBetweenAndEmailStatusAndSmsStatus(LocalDateTime dateTimeOfRequest, LocalDateTime endRange, SendStatus waitingStatus,SendStatus smsWaitingStatus);
 
 }
