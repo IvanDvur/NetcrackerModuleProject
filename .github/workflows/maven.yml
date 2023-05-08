@@ -52,8 +52,6 @@ jobs:
         run: |
           cd ./send-manager
           mvn clean package -DskipTests
-        with:
-          context: ./send-manager
       - name: Build & Push Docker Image Send-Manager
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
