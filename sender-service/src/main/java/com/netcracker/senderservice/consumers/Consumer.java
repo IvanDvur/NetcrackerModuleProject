@@ -38,11 +38,7 @@ public class Consumer {
         if (json == null) {
             System.out.println("Null Skip");
         } else {
-            try {
-                mailSend.send(json);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
+            mailSend.send(json);
         }
     }
 
