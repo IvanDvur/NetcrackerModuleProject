@@ -85,6 +85,6 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>sender-service</finalName>
+        <finalName>new-sender-service</finalName>
     </build>
 </project>
