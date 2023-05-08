@@ -1,0 +1,4 @@
+FIRST_NAME,LAST_NAME,EMAIL,GENDER,PHONE_NUMBER,BIRTHDAY,COUNTRY_CODE,CITY
+Иван,Двуреченский,ivan5656@list.ru,true,78005553535,09.07.2000,7,VRN
+Илья,Коробко,ilya@mail.ru,true,78003333535,12.02.2001,7,VRN
+Новый,Пользователь,newUser@mail.ru,true,78803332233,12.03.2003,7,VRN

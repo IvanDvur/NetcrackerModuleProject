@@ -1,0 +1,30 @@
+server:
+  port: 8081
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+    properties:
+      spring.deserializer.key.delegate.class:  org.apache.kafka.common.serialization.StringDeserializer
+      spring.deserializer.value.delegate.class:   org.springframework.kafka.support.serializer.JsonDeserializer
+
+logging:
+  level:
+    s7.Application: WARN
+    org.springframework.web: ERROR
+    com.netcracker.SendManager: DEBUG
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss} - %msg%n"
+    file: "%d{dd-MM-yyyy HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: E:/NewSendManager/NewSendManager/src/main/resources/logs/send-manager.log
+rest:
+  address: http://localhost:8080/order
+  callback_address: http://localhost:8080/schedule
+
+

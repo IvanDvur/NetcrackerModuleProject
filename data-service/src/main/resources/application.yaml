@@ -1,0 +1,20 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database: postgresql
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/dataService
+logging:
+  level:
+    s7.Application: WARN
+    org.springframework.web: ERROR
+    com.netcracker.SendManager: DEBUG
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss} - %msg%n"
+    file: "%d{dd-MM-yyyy HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: D:\JavaProjects\DataService\src\main\resources\logs\data-service.log
