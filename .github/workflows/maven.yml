@@ -29,8 +29,8 @@ jobs:
       working_directory: ./data-service
       run: mvn clean package -DskipTests
     - name: Build & Push Docker Image
-      working_directory: ./data-service
       uses: mr-smithers-excellent/docker-build-push@v5
+      working_directory: ./data-service
       with:
         image: ivandvurechenskiy/data-service
         tags: latest
@@ -38,9 +38,8 @@ jobs:
         dockerfile: Dockerfile
         username: ivandvurechenskiy
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Build and Push send-manager
     - name: Set up JDK 11
+      working_directory: ./send-manager
       uses: actions/setup-java@v3
       with:
         java-version: '11'
@@ -59,10 +58,8 @@ jobs:
         dockerfile: Dockerfile
         username: ivandvurechenskiy
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Build and Push sender-service
-      uses: actions/checkout@v3
     - name: Set up JDK 11
+      working_directory: ./sender-service
       uses: actions/setup-java@v3
       with:
         java-version: '11'
