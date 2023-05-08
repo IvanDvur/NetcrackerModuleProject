@@ -18,64 +18,65 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      working_directory: ./data-service
-      run: mvn clean package -DskipTests
-    - name: Build & Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v5
-      working_directory: ./data-service
-      with:
-        image: ivandvurechenskiy/data-service
-        tags: latest
-        registry: docker.io
-        dockerfile: Dockerfile
-        username: ivandvurechenskiy
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Set up JDK 11
-      working_directory: ./send-manager
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      working_directory: ./send-manager
-      run: mvn clean package -DskipTests
-    - name: Build & Push Docker Image
-      working_directory: ./send-manager
-      uses: mr-smithers-excellent/docker-build-push@v5
-      with:
-        image: ivandvurechenskiy/new-send-manager
-        tags: latest
-        registry: docker.io
-        dockerfile: Dockerfile
-        username: ivandvurechenskiy
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Set up JDK 11
-      working_directory: ./sender-service
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      working_directory: ./sender-service
-      run: mvn clean package -DskipTests
-    - name: Build & Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v5
-      with:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        working_directory: ./data-service
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build data-service
+        working_directory: ./data-service
+        run: mvn clean package -DskipTests
+      - name: Build & Push Docker data-service
+        working_directory: ./data-service
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: ivandvurechenskiy/data-service
+          tags: latest
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ivandvurechenskiy
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set up JDK 11
+        working_directory: ./send-manager
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        working_directory: ./send-manager
+        run: mvn clean package -DskipTests
+      - name: Build & Push Docker Image
+        working_directory: ./send-manager
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: ivandvurechenskiy/new-send-manager
+          tags: latest
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ivandvurechenskiy
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set up JDK 11
         working_directory: ./sender-service
-        image: ivandvurechenskiy/new-sender-service
-        tags: latest
-        registry: docker.io
-        dockerfile: Dockerfile
-        username: ivandvurechenskiy
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        working_directory: ./sender-service
+        run: mvn clean package -DskipTests
+      - name: Build & Push Docker Image
+        working_directory: ./sender-service
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: ivandvurechenskiy/new-sender-service
+          tags: latest
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ivandvurechenskiy
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
