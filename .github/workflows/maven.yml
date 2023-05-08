@@ -37,7 +37,7 @@ jobs:
           image: ivandvurechenskiy/data-service
           tags: latest
           registry: docker.io
-          dockerfile: Dockerfile
+          dockerfile: ./data-service/Dockerfile
           username: ivandvurechenskiy
           password: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -59,7 +59,7 @@ jobs:
           image: ivandvurechenskiy/new-send-manager
           tags: latest
           registry: docker.io
-          dockerfile: Dockerfile
+          dockerfile: ./send-manager/Dockerfile
           username: ivandvurechenskiy
           password: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -81,7 +81,7 @@ jobs:
           image: ivandvurechenskiy/new-sender-service
           tags: latest
           registry: docker.io
-          dockerfile: Dockerfile
+          dockerfile: ./sender-service/Dockerfile
           username: ivandvurechenskiy
           password: ${{ secrets.DOCKER_PASSWORD }}
 
