@@ -20,59 +20,64 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
-        working_directory: ./data-service
         uses: actions/setup-java@v3
         with:
+          context: ./data-service
           java-version: '11'
           distribution: 'temurin'
           cache: maven
       - name: Build data-service
-        working_directory: ./data-service
         run: mvn clean package -DskipTests
+        with:
+          context: ./data-service
       - name: Build & Push Docker data-service
-        working_directory: ./data-service
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
+          context: ./data-service
           image: ivandvurechenskiy/data-service
           tags: latest
           registry: docker.io
           dockerfile: Dockerfile
           username: ivandvurechenskiy
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Set up JDK 11
-        working_directory: ./send-manager
         uses: actions/setup-java@v3
         with:
+          context: ./send-manager
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        working_directory: ./send-manager
+      - name: Build send-manager
         run: mvn clean package -DskipTests
-      - name: Build & Push Docker Image
-        working_directory: ./send-manager
+        with:
+          context: ./send-manager
+      - name: Build & Push Docker Image Send-Manager
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
+          context: ./send-manager
           image: ivandvurechenskiy/new-send-manager
           tags: latest
           registry: docker.io
           dockerfile: Dockerfile
           username: ivandvurechenskiy
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Set up JDK 11
-        working_directory: ./sender-service
         uses: actions/setup-java@v3
         with:
+          context: ./sender-service
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        working_directory: ./sender-service
+      - name: Build sender-service
         run: mvn clean package -DskipTests
-      - name: Build & Push Docker Image
-        working_directory: ./sender-service
+        with:
+          context: ./sender-service
+      - name: Build & Push Docker Image sender-service
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
+          context: ./sender-service
           image: ivandvurechenskiy/new-sender-service
           tags: latest
           registry: docker.io
