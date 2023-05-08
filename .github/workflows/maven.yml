@@ -40,7 +40,10 @@ jobs:
           dockerfile: ./data-service/Dockerfile
           username: ivandvurechenskiy
           password: ${{ secrets.DOCKER_PASSWORD }}
-
+      - name: Build dto-module
+        run: |
+          cd ./dto-module
+          mvn clean install
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
