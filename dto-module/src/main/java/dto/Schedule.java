@@ -17,15 +17,15 @@ public class Schedule {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm")
     private LocalDateTime timeToSend;
     private UUID id;
-    private SendStatus emailStatus = SendStatus.WAITING;
-    private SendStatus smsStatus = SendStatus.WAITING;
     private Integer retriesCount;
-    public Schedule(LocalDateTime timeToSend, UUID id, SendStatus sendStatus,SendStatus smsStatus,Integer retriesCount) {
+    private SendStatus emailStatus;
+    private SendStatus smsStatus;
+    public Schedule(LocalDateTime timeToSend, UUID id, SendStatus emailStatus,SendStatus smsStatus,Integer retriesCount) {
         this.timeToSend = timeToSend;
         this.id = id;
-        this.emailStatus = sendStatus;
-        this.smsStatus = smsStatus;
         this.retriesCount = retriesCount;
+        this.smsStatus = smsStatus;
+        this.emailStatus=emailStatus;
     }
 
     public Schedule() {

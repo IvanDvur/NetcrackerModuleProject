@@ -4,7 +4,6 @@ import dto.Schedule;
 import dto.GenericDto;
 import com.netcracker.SendManager.dto.MessageDto;
 import com.netcracker.SendManager.producer.Producer;
-import org.springframework.web.client.RestTemplate;
 
 
 public class KafkaTask implements Runnable {

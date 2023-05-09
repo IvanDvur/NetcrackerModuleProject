@@ -2,10 +2,7 @@ package com.netcracker.dataservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcracker.dataservice.model.AdTypes;
-import com.netcracker.dataservice.model.Client;
-import com.netcracker.dataservice.model.Schedule;
-import com.netcracker.dataservice.model.SendingOrder;
+import com.netcracker.dataservice.model.*;
 import com.netcracker.dataservice.repositories.OrderRepository;
 import com.netcracker.dataservice.repositories.ScheduleRepo;
 import com.netcracker.dataservice.service.converters.CsvParser;
@@ -156,5 +153,23 @@ public class UpdateService {
         scheduleToUpdate.setSmsStatus(schedule.getSmsStatus());
         scheduleToUpdate.setRetriesCount(schedule.getRetriesCount());
         scheduleRepo.save(scheduleToUpdate);
+    }
+
+    public void updateEmailStatus(String id, String status) {
+        Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
+        if(optionalSchedule.isPresent()){
+            Schedule schedule = optionalSchedule.get();
+            schedule.setEmailStatus(SendStatus.valueOf(status));
+            scheduleRepo.save(schedule);
+        }
+    }
+
+    public void updateSmsStatus(String id, String status) {
+        Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
+        if(optionalSchedule.isPresent()){
+            Schedule schedule = optionalSchedule.get();
+            schedule.setSmsStatus(SendStatus.valueOf(status));
+            scheduleRepo.save(schedule);
+        }
     }
 }

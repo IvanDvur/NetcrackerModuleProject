@@ -29,6 +29,8 @@ rest:
   callback_address: http://localhost:8080/schedule
   retry_address: http://localhost:8080/schedule/retry
   expired_address: http://localhost:8080/schedule/expired
+  callback_sms_address: http://localhost:8080/schedule/sms
+  callback_email_address: http://localhost:8080/schedule/email
 service:
   medium_load: 10
   high_load: 20
