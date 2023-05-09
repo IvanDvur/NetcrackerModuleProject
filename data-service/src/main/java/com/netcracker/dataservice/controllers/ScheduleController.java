@@ -27,7 +27,7 @@ public class ScheduleController {
      * @return
      */
     @PutMapping("/email")
-    public void updateEmailStatus(@RequestParam String  id,@RequestParam String status){
+    public void updateEmailStatus(@RequestParam String id,@RequestParam String status){
         logger.info("Updating status for schedule {}",id);
         updateService.updateEmailStatus(id,status);
     }

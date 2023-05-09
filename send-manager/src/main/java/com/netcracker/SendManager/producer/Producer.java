@@ -5,6 +5,8 @@ import dto.GenericDto;
 import dto.SendStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -18,19 +20,18 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Slf4j
+
 @Component
 public class Producer {
 
     private final KafkaTemplate<String, GenericDto> kafkaTemplate;
     private RestTemplate restTemplate;
-    @Value("${rest.callback_address}")
-    private String url;
+
     @Value("${rest.callback_sms_address}")
     private String smsCallbackUrl;
     @Value("${rest.callback_email_address}")
     private String emailCallbackUrl;
-
+    private Logger log = LoggerFactory.getLogger(Producer.class);
     @Autowired
     public Producer(KafkaTemplate<String, GenericDto> kafkaTemplate, RestTemplate restTemplate) {
         this.kafkaTemplate = kafkaTemplate;
@@ -43,12 +44,13 @@ public class Producer {
             @Override
             public void onSuccess(SendResult<String, GenericDto> result) {
                 if (topic.equals("t.sms")) {
-
                     restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), smsCallbackUrl, "PROCESSED"),
                             ResponseEntity.class);
+                    log.info("Updating status for sms to PROCESSED {}",dto.getScheduleId());
                 } else if (topic.equals("t.email")) {
                     restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), emailCallbackUrl, "PROCESSED"),
                             ResponseEntity.class);
+                    log.info("Updating status for email to PROCESSED {}",dto.getScheduleId());
                 }
             }
             @Override
@@ -56,9 +58,11 @@ public class Producer {
                 if (topic.equals("t.sms")) {
                     restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), smsCallbackUrl, "FAILED"),
                             ResponseEntity.class);
+                    log.info("Updating status for sms to FAILED {}",dto.getScheduleId());
                 } else if (topic.equals("t.email")) {
                     restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), emailCallbackUrl, "FAILED"),
                             ResponseEntity.class);
+                    log.info("Updating status for email to FAILED {}",dto.getScheduleId());
                 }
                 log.info("Exception happeneded {}",ex);
             }

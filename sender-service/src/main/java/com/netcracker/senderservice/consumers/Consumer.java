@@ -22,24 +22,12 @@ public class Consumer {
 
     @KafkaListener(topics = "t.sms", groupId = "my_group")
     public void listenSms(GenericDto json) {
-        if (json == null) {
-            System.out.println("SMS Null check");
-        } else {
-            try {
-                smsSender.send(json);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+        smsSender.send(json);
     }
 
     @KafkaListener(topics = "t.email", groupId = "my_group")
     public void listenEmail(GenericDto json) {
-        if (json == null) {
-            System.out.println("Null Skip");
-        } else {
-            mailSend.send(json);
-        }
+        mailSend.send(json);
     }
 
 }

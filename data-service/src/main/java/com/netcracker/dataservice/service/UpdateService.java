@@ -161,26 +161,30 @@ public class UpdateService {
 
     public void updateEmailStatus(String id, String status) {
         Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
-        if(optionalSchedule.isPresent()){
+        if (optionalSchedule.isPresent()) {
             Schedule schedule = optionalSchedule.get();
-            if(schedule.getRetriesCount()<maxRetriesCount && (status.equals("FAILED")|| status.equals("NOT_SENT"))) {
+            if (status.equals("SENT") || status.equals("PROCESSED")) {
                 schedule.setEmailStatus(SendStatus.valueOf(status));
-                schedule.setRetriesCount(schedule.getRetriesCount()+1);
-            }else {
+            } else if (schedule.getRetriesCount() < maxRetriesCount && (status.equals("FAILED") || status.equals("NOT_SENT"))) {
+                schedule.setEmailStatus(SendStatus.valueOf(status));
+                schedule.setRetriesCount(schedule.getRetriesCount() + 1);
+            } else {
                 schedule.setEmailStatus(SendStatus.EXPIRED);
             }
             scheduleRepo.save(schedule);
         }
     }
 
-    public void updateSmsStatus(String id, String status) {
+    public  void updateSmsStatus(String id, String status) {
         Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
-        if(optionalSchedule.isPresent()){
+        if (optionalSchedule.isPresent()) {
             Schedule schedule = optionalSchedule.get();
-            if(schedule.getRetriesCount()<maxRetriesCount && (status.equals("FAILED") ||status.equals("NOT_SENT"))) {
+            if (status.equals("SENT") || status.equals("PROCESSED")) {
                 schedule.setSmsStatus(SendStatus.valueOf(status));
-                schedule.setRetriesCount(schedule.getRetriesCount()+1);
-            }else {
+            }else if (schedule.getRetriesCount() < maxRetriesCount && (status.equals("FAILED") || status.equals("NOT_SENT"))) {
+                schedule.setSmsStatus(SendStatus.valueOf(status));
+                schedule.setRetriesCount(schedule.getRetriesCount() + 1);
+            } else {
                 schedule.setSmsStatus(SendStatus.EXPIRED);
             }
             scheduleRepo.save(schedule);

@@ -2,6 +2,7 @@ package com.netcracker.senderservice.service;
 
 
 import com.netcracker.senderservice.producer.Producer;
+import com.sun.mail.util.MailConnectException;
 import dto.*;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class MailSender {
 
     @Autowired
     public MailSender(TemplateParser templateParser, JavaMailSender mailSender, Producer producer) {
-        this.javaMailSender = mailSender;
+        this.javaMailSender=mailSender;
         this.templateParser = templateParser;
         this.producer = producer;
     }
@@ -54,9 +55,7 @@ public class MailSender {
             }
             //Апдейтим статус через кафку
             producer.sendMessage("t.success",updateStatusDto);
-        } catch (IOException | TemplateException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             producer.sendMessage("t.error",updateStatusDto);
             e.printStackTrace();
         } finally {
