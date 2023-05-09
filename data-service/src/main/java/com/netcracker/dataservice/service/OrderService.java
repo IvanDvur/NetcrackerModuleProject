@@ -8,6 +8,7 @@ import com.netcracker.dataservice.repositories.ClientRepository;
 import com.netcracker.dataservice.repositories.OrderRepository;
 import com.netcracker.dataservice.repositories.ScheduleRepo;
 import com.netcracker.dataservice.service.converters.CsvParser;
+import dto.SendStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,7 +114,7 @@ public class OrderService {
                 dt.getHour(),
                 dt.getMinute());
         List<Schedule> schedules = scheduleRepo.findAllByTimeToSendBetweenAndEmailStatusAndSmsStatus(dt, timeOfRequest.plusMinutes(30),
-                SendStatus.WAITING,SendStatus.WAITING);
+                SendStatus.WAITING, SendStatus.WAITING);
         Set<SendingOrder> orders = schedules.stream().map(x -> x.getOrder()).collect(Collectors.toSet());
         List<OrderDto> orderDtos = new ArrayList<>();
 

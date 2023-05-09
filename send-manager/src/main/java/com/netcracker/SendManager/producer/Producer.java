@@ -37,26 +37,27 @@ public class Producer {
         this.restTemplate = restTemplate;
     }
 
-    public void sendMessage(GenericDto dto, String topic, Schedule schedule) {
-        kafkaTemplate.send(topic, dto).addCallback(new ListenableFutureCallback<SendResult<String, GenericDto>>() {
+    public void sendMessage(GenericDto dto, String topic) {
+        kafkaTemplate.send(topic, dto).addCallback(new ListenableFutureCallback<>() {
 
             @Override
             public void onSuccess(SendResult<String, GenericDto> result) {
                 if (topic.equals("t.sms")) {
-                    restTemplate.put(prepareProcessedUrl(schedule.getId().toString(), smsCallbackUrl, "PROCESSED"),
+
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), smsCallbackUrl, "PROCESSED"),
                             ResponseEntity.class);
                 } else if (topic.equals("t.email")) {
-                    restTemplate.put(prepareProcessedUrl(schedule.getId().toString(), emailCallbackUrl, "PROCESSED"),
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), emailCallbackUrl, "PROCESSED"),
                             ResponseEntity.class);
                 }
             }
             @Override
             public void onFailure(Throwable ex) {
                 if (topic.equals("t.sms")) {
-                    restTemplate.put(prepareProcessedUrl(schedule.getId().toString(), smsCallbackUrl, "FAILED"),
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), smsCallbackUrl, "FAILED"),
                             ResponseEntity.class);
                 } else if (topic.equals("t.email")) {
-                    restTemplate.put(prepareProcessedUrl(schedule.getId().toString(), emailCallbackUrl, "FAILED"),
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), emailCallbackUrl, "FAILED"),
                             ResponseEntity.class);
                 }
                 log.info("Exception happeneded {}",ex);
@@ -64,10 +65,5 @@ public class Producer {
         });
     }
 
-    private static String prepareProcessedUrl(String scheduleId, String baseUrl, String status) {
-        return UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .queryParam("id", scheduleId)
-                .queryParam("status", status)
-                .build().toUriString();
-    }
+
 }

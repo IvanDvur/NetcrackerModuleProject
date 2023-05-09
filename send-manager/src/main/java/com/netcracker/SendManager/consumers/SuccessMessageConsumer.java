@@ -1,6 +1,9 @@
 package com.netcracker.SendManager.consumers;
 
+import dto.AdTypes;
+import dto.GenericDto;
 import dto.Schedule;
+import dto.UpdateStatusDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +14,11 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class SuccessMessageConsumer {
 
-    @Value("${rest.callback_address}")
-    private String callbackUrl;
+    @Value("${rest.callback_sms_address}")
+    private String smsCallbackUrl;
+    @Value("${rest.callback_email_address}")
+    private String emailCallbackUrl;
+
     private RestTemplate restTemplate;
 
     @Autowired
@@ -21,8 +27,12 @@ public class SuccessMessageConsumer {
     }
 
     @KafkaListener(topics = "t.success",groupId = "my_group")
-    public void consumeSuccessMessages(Schedule schedule){
-        restTemplate.put(callbackUrl,schedule, ResponseEntity.class);
+    public void consumeSuccessMessages(UpdateStatusDto dto){
+        if(dto.getType().equals(AdTypes.EMAIL)){
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),emailCallbackUrl,"SENT"),ResponseEntity.class);
+        } else if (dto.getType().equals(AdTypes.SMS)) {
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),smsCallbackUrl,"SENT"),ResponseEntity.class);
+        }
     }
 
 }

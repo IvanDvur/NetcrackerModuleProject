@@ -3,6 +3,7 @@ package com.netcracker.dataservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dto.SendStatus;
 import lombok.Getter;
 import lombok.Setter;
 

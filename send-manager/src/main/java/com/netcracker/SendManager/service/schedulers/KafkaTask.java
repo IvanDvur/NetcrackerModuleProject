@@ -40,18 +40,26 @@ public class KafkaTask implements Runnable {
             switch (sendType) {
                 case "SMS":
                     producer.sendMessage(
-                            new GenericDto(messageDto.getSmsAdvertisement(), messageDto.getClientsDtos(),schedule),
-                            "t.sms",schedule);
+                            new GenericDto(
+                                    messageDto.getSmsAdvertisement(),
+                                    messageDto.getClientsDtos(),
+                                    schedule.getId().toString()),
+                            "t.sms");
                     break;
                 case "EMAIL":
                     producer.sendMessage(
-                            new GenericDto(messageDto.getEmailAdvertisement(), messageDto.getClientsDtos(),schedule),
-                            "t.email",schedule);
+                            new GenericDto(
+                                    messageDto.getEmailAdvertisement(),
+                                    messageDto.getClientsDtos(),
+                                    schedule.getId().toString()),
+                            "t.email");
                     break;
                 case "MESSENGER":
                     producer.sendMessage(
-                            new GenericDto(messageDto.getMessengerAdvertisement(), messageDto.getClientsDtos(),schedule),
-                            "t.messenger",schedule);
+                            new GenericDto(messageDto.getMessengerAdvertisement(),
+                                    messageDto.getClientsDtos(),
+                                    schedule.getId().toString()),
+                            "t.messenger");
                     break;
             }
         }

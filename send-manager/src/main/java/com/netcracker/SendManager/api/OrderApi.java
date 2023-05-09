@@ -24,7 +24,6 @@ public class OrderApi {
 
     @Value("${rest.address}")
     private String url;
-
     @Value("${rest.retry_address}")
     private String messageForRetryURL;
     @Value("${rest.expired_address}")
@@ -34,9 +33,9 @@ public class OrderApi {
     @Value("${service.high_load}")
     private Integer highLoad;
     private RestTemplate restTemplate;
-
     private static final Logger log = LoggerFactory.getLogger(OrderApi.class);
     private final KafkaTopicSplitterService topicSplitterService;
+
     @Autowired
     public OrderApi(RestTemplate restTemplate, KafkaTopicSplitterService customerService) {
         this.restTemplate = restTemplate;
@@ -57,6 +56,7 @@ public class OrderApi {
             log.warn("No connection to data-service");
         }
     }
+
     @Scheduled(fixedRate = 10000)
     public void getFailedMessages() {
         if (OrderScheduler.schedulerLoad > highLoad) {
@@ -71,9 +71,10 @@ public class OrderApi {
             log.warn("No connection to data-service");
         }
     }
+
     @Scheduled(fixedRate = 10000)
     public void getExpiredMessages() {
-        if(OrderScheduler.schedulerLoad>mediumLoad){
+        if (OrderScheduler.schedulerLoad > mediumLoad) {
             return;
         }
         try {

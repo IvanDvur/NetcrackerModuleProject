@@ -1,8 +1,8 @@
 package com.netcracker.dataservice.controllers;
 
-import com.netcracker.dataservice.model.AdTypes;
 import com.netcracker.dataservice.model.SendingOrder;
 import com.netcracker.dataservice.service.UpdateService;
+import dto.AdTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

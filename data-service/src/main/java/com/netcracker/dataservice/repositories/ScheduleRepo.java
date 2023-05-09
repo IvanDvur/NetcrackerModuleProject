@@ -1,7 +1,7 @@
 package com.netcracker.dataservice.repositories;
 
 import com.netcracker.dataservice.model.Schedule;
-import com.netcracker.dataservice.model.SendStatus;
+import dto.SendStatus;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface ScheduleRepo extends CrudRepository<Schedule, UUID> {
 
-    List<Schedule> findAllByTimeToSendBetweenAndEmailStatusAndSmsStatus(LocalDateTime dateTimeOfRequest, LocalDateTime endRange, SendStatus waitingStatus,SendStatus smsWaitingStatus);
+    List<Schedule> findAllByTimeToSendBetweenAndEmailStatusAndSmsStatus(LocalDateTime dateTimeOfRequest, LocalDateTime endRange, SendStatus waitingStatus, SendStatus smsWaitingStatus);
 
 }

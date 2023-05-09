@@ -18,3 +18,5 @@ logging:
     file: "%d{dd-MM-yyyy HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
   file:
     name: D:\JavaProjects\DataService\src\main\resources\logs\data-service.log
+service:
+  max_retries_count: 5

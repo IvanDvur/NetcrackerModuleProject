@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.model;
+package dto;
 
 /**
  * Перечисление для типа рекламы

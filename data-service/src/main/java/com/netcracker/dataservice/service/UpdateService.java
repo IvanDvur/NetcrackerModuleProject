@@ -6,7 +6,10 @@ import com.netcracker.dataservice.model.*;
 import com.netcracker.dataservice.repositories.OrderRepository;
 import com.netcracker.dataservice.repositories.ScheduleRepo;
 import com.netcracker.dataservice.service.converters.CsvParser;
+import dto.AdTypes;
+import dto.SendStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,8 @@ import java.util.UUID;
 
 @Service
 public class UpdateService {
-
+    @Value("${service.max_retries_count}")
+    private Integer maxRetriesCount;
     private final CsvParser csvParser;
     private final ObjectMapper mapper;
     private final OrderRepository orderRepository;
@@ -159,7 +163,12 @@ public class UpdateService {
         Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
         if(optionalSchedule.isPresent()){
             Schedule schedule = optionalSchedule.get();
-            schedule.setEmailStatus(SendStatus.valueOf(status));
+            if(schedule.getRetriesCount()<maxRetriesCount && (status.equals("FAILED")|| status.equals("NOT_SENT"))) {
+                schedule.setEmailStatus(SendStatus.valueOf(status));
+                schedule.setRetriesCount(schedule.getRetriesCount()+1);
+            }else {
+                schedule.setEmailStatus(SendStatus.EXPIRED);
+            }
             scheduleRepo.save(schedule);
         }
     }
@@ -168,7 +177,12 @@ public class UpdateService {
         Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
         if(optionalSchedule.isPresent()){
             Schedule schedule = optionalSchedule.get();
-            schedule.setSmsStatus(SendStatus.valueOf(status));
+            if(schedule.getRetriesCount()<maxRetriesCount && (status.equals("FAILED") ||status.equals("NOT_SENT"))) {
+                schedule.setSmsStatus(SendStatus.valueOf(status));
+                schedule.setRetriesCount(schedule.getRetriesCount()+1);
+            }else {
+                schedule.setSmsStatus(SendStatus.EXPIRED);
+            }
             scheduleRepo.save(schedule);
         }
     }

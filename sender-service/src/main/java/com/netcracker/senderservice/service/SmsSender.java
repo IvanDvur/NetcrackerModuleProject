@@ -14,17 +14,16 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class SmsSender {
-    @Value("${service.max_retries_count}")
-    private Integer maxRetriesCount;
+
     private Producer producer;
 
     public SmsSender(Producer producer) {
         this.producer = producer;
     }
 
-    public void send(GenericDto<SmsAdvertisement> advertisment) {
-        SmsAdvertisement smsAdvertisement = advertisment.getAdvertisement();
-        Schedule schedule = advertisment.getSchedule();
+    public void send(GenericDto<SmsAdvertisement> dto) {
+        SmsAdvertisement smsAdvertisement = dto.getAdvertisement();
+        UpdateStatusDto updateStatusDto = new UpdateStatusDto(dto.getScheduleId(), AdTypes.SMS);
         try {
             // Задаем параметры запроса
             MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
@@ -33,7 +32,7 @@ public class SmsSender {
             requestBody.add("time", "0");
             requestBody.add("mes", smsAdvertisement.getText());
 
-            for (ClientDto clientDto : advertisment.getClientDtoSet()) {
+            for (ClientDto clientDto : dto.getClientDtoSet()) {
                 requestBody.add("phones", clientDto.getPhoneNumber() + ";");
             }
             // Формируем заголовки запроса
@@ -46,19 +45,9 @@ public class SmsSender {
             // Отправляем запрос на указанный URL с заданными параметрами и получаем ответ в виде строки
             ResponseEntity<String> response = restTemplate.exchange("https://smsc.ru/sys/send.php", HttpMethod.POST, entity, String.class);
             System.out.println("Response: " + response.getBody());
-            schedule.setSmsStatus(SendStatus.SENT);
-            producer.sendMessage("t.success",schedule);
-
+            producer.sendMessage("t.success",updateStatusDto);
         } catch (RestClientException e) {
-            if (schedule.getRetriesCount() < maxRetriesCount) {
-                schedule.setSmsStatus(SendStatus.NOT_SENT);
-                schedule.setRetriesCount(schedule.getRetriesCount() + 1);
-                producer.sendMessage("t.error", schedule);
-
-            }else{
-                schedule.setSmsStatus(SendStatus.EXPIRED);
-                producer.sendMessage("t.error", schedule);
-            }
+            producer.sendMessage("t.error",updateStatusDto);
             e.printStackTrace();
         }
 

@@ -26,8 +26,6 @@ public class MailSender {
     private JavaMailSender javaMailSender;
     @Value("${mail.user}")
     private String fromUsername;
-    @Value("${service.max_retries_count}")
-    private Integer maxRetriesCount;
     private Producer producer;
 
     @Autowired
@@ -37,18 +35,17 @@ public class MailSender {
         this.producer = producer;
     }
 
-    public void send(GenericDto<EmailAdvertisement> emailGenericDto) {
-        EmailAdvertisement ea = emailGenericDto.getAdvertisement();
-        Schedule schedule = emailGenericDto.getSchedule();
+    public void send(GenericDto<EmailAdvertisement> dto) {
+        EmailAdvertisement ea = dto.getAdvertisement();
         String template = new String(Base64.getDecoder().decode(ea.getTemplate()));
         MimeMessage msg = javaMailSender.createMimeMessage();
-
+        UpdateStatusDto updateStatusDto = new UpdateStatusDto(dto.getScheduleId(),AdTypes.EMAIL);
         try {
             msg.setSentDate(new Date());
             msg.setSubject(ea.getTopic());//топик
             msg.setFrom(fromUsername);
             TemplateParser.writeTemplateFile(template);
-            for (ClientDto clientDto : emailGenericDto.getClientDtoSet()) {
+            for (ClientDto clientDto : dto.getClientDtoSet()) {
                 InternetAddress address = new InternetAddress(clientDto.getEmail());
                 msg.setRecipient(Message.RecipientType.TO, address);
                 msg.setContent(templateParser.parseTemplate(clientDto, ea.getPlaceholders()), "text/html;charset=utf-8");
@@ -56,20 +53,11 @@ public class MailSender {
                 System.out.println("Email has been sent to " + clientDto.getEmail());
             }
             //Апдейтим статус через кафку
-            schedule.setEmailStatus(SendStatus.SENT);
-            producer.sendMessage("t.success",schedule);
+            producer.sendMessage("t.success",updateStatusDto);
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
-            if (schedule.getRetriesCount() < maxRetriesCount) {
-                schedule.setEmailStatus(SendStatus.NOT_SENT);
-                schedule.setRetriesCount(schedule.getRetriesCount() + 1);
-                producer.sendMessage("t.error", schedule);
-
-            }else{
-                schedule.setEmailStatus(SendStatus.EXPIRED);
-                producer.sendMessage("t.error", schedule);
-            }
+            producer.sendMessage("t.error",updateStatusDto);
             e.printStackTrace();
         } finally {
             File file = new File("sender-service/src/main/resources/templates/template.ftlh");

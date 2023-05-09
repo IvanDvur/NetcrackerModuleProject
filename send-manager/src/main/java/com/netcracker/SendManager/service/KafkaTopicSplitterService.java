@@ -52,12 +52,12 @@ public class KafkaTopicSplitterService {
             List<MessageDto> data = objectMapper.readValue(orderDto, new TypeReference<>() {
             });
             for (MessageDto messageDto : data) {
-                messageDto.getSchedule().forEach(x -> {
-                    orderScheduler.scheduleATask(x,
-                            new KafkaTask(producer, orderScheduler, messageDto, x));
-                    x.setEmailStatus(SendStatus.PROCESSING);
-                    x.setSmsStatus(SendStatus.PROCESSING);
-                    restTemplate.put(url,x, ResponseEntity.class);
+                messageDto.getSchedule().forEach(schedule -> {
+                    orderScheduler.scheduleATask(schedule,
+                            new KafkaTask(producer, orderScheduler, messageDto, schedule));
+                    schedule.setEmailStatus(SendStatus.PROCESSING);
+                    schedule.setSmsStatus(SendStatus.PROCESSING);
+                    restTemplate.put(url, schedule, ResponseEntity.class);
                 });
             }
         } catch (JsonProcessingException e) {
@@ -65,14 +65,17 @@ public class KafkaTopicSplitterService {
         }
     }
 
-    public void processFailedMessage(String errorOrderDto){
+    public void processFailedMessage(String errorOrderDto) {
         try {
             List<MessageDto> data = objectMapper.readValue(errorOrderDto, new TypeReference<>() {
             });
-            for(MessageDto messageDto : data){
-                messageDto.getSchedule().forEach(x->{
-                    if(x.getSmsStatus().equals(SendStatus.FAILED)){
-                        GenericDto<SmsAdvertisement> dto = new GenericDto<>(messageDto.getSmsAdvertisement(),messageDto.getClientsDtos(),x);
+            for (MessageDto messageDto : data) {
+                messageDto.getSchedule().forEach(schedule -> {
+                    if (schedule.getSmsStatus().equals(SendStatus.FAILED)) {
+                        GenericDto<SmsAdvertisement> dto = new GenericDto<>(
+                                messageDto.getSmsAdvertisement(),
+                                messageDto.getClientsDtos(),
+                                schedule.getId().toString());
                     }
                 });
             }
