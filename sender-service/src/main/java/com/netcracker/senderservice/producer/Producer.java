@@ -18,10 +18,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class Producer {
 
-    @Value("${rest.callback_sms_address}")
-    private String smsCallbackUrl;
-    @Value("${rest.callback_email_address}")
-    private String emailCallbackUrl;
+    @Value("${rest.callback_generic_address}")
+    private String callbackUrl;
     private RestTemplate restTemplate;
     private final KafkaTemplate<String, UpdateStatusDto> kafkaTemplate;
     private static final Logger log = LoggerFactory.getLogger(Producer.class);
@@ -41,19 +39,19 @@ public class Producer {
             @Override
             public void onFailure(Throwable ex) {
                 if (topic.equals("t.success") && dto.getType().equals(AdTypes.EMAIL)) {
-                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), emailCallbackUrl, "SENT"),
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), callbackUrl, "SENT","email"),
                             ResponseEntity.class);
                 }
                 if (topic.equals("t.success") && dto.getType().equals(AdTypes.SMS)) {
-                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), smsCallbackUrl, "SENT"),
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), callbackUrl, "SENT","sms"),
                             ResponseEntity.class);
                 }
                 if (topic.equals("t.error") && dto.getType().equals(AdTypes.EMAIL)) {
-                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), emailCallbackUrl, "NOT_SENT"),
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), callbackUrl, "NOT_SENT","email"),
                             ResponseEntity.class);
                 }
                 if (topic.equals("t.error") && dto.getType().equals(AdTypes.SMS)) {
-                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), smsCallbackUrl, "NOT_SENT"),
+                    restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(), callbackUrl, "NOT_SENT","sms"),
                             ResponseEntity.class);
                 }
             }

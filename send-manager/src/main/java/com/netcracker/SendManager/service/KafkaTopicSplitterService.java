@@ -9,9 +9,10 @@ import com.netcracker.SendManager.dto.MessageDto;
 import com.netcracker.SendManager.producer.Producer;
 import com.netcracker.SendManager.service.schedulers.KafkaTask;
 import com.netcracker.SendManager.service.schedulers.OrderScheduler;
+import dto.FailedDto;
 import dto.GenericDto;
 import dto.SendStatus;
-import dto.SmsAdvertisement;
+import dto.UpdateStatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class KafkaTopicSplitterService {
 
     @Value("${rest.callback_address}")
     private String url;
+    @Value("${rest.callback_generic_address}")
+    private String callbackUrl;
     private OrderScheduler orderScheduler;
     private ObjectMapper objectMapper;
     private RestTemplate restTemplate;
@@ -67,17 +70,15 @@ public class KafkaTopicSplitterService {
 
     public void processFailedMessage(String errorOrderDto) {
         try {
-            List<MessageDto> data = objectMapper.readValue(errorOrderDto, new TypeReference<>() {
+            List<FailedDto> data = objectMapper.readValue(errorOrderDto, new TypeReference<>() {
             });
-            for (MessageDto messageDto : data) {
-                messageDto.getSchedule().forEach(schedule -> {
-                    if (schedule.getSmsStatus().equals(SendStatus.FAILED)) {
-                        GenericDto<SmsAdvertisement> dto = new GenericDto<>(
-                                messageDto.getSmsAdvertisement(),
-                                messageDto.getClientsDtos(),
-                                schedule.getId().toString());
-                    }
+            for (FailedDto failedDto :data){
+                failedDto.getRetryTypes().forEach(type -> {
+                    restTemplate.put(GenericDto.prepareStatusUrl(failedDto.getScheduleId(),callbackUrl,"PROCESSED",type.toLowerCase()),ResponseEntity.class);
+                    producer.sendMessage(new GenericDto<>(failedDto.getAdvertisment(type),
+                            failedDto.getClientsDtos(),failedDto.getScheduleId()),"t."+type.toLowerCase());
                 });
+
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();

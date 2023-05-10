@@ -15,10 +15,9 @@ import org.springframework.web.client.RestTemplate;
 public class ErrorMessageConsumer {
 
     private RestTemplate restTemplate;
-    @Value("${rest.callback_sms_address}")
-    private String smsCallbackUrl;
-    @Value("${rest.callback_email_address}")
-    private String emailCallbackUrl;
+    @Value("${rest.callback_generic_address}")
+    private String callbackUrl;
+
     @Autowired
     public ErrorMessageConsumer(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -27,9 +26,9 @@ public class ErrorMessageConsumer {
     @KafkaListener(topics = "t.error",groupId = "my_group")
     public void consumeErrorMessages(UpdateStatusDto dto){
         if(dto.getType().equals(AdTypes.EMAIL)){
-            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),emailCallbackUrl,"NOT_SENT"),ResponseEntity.class);
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"NOT_SENT","email"),ResponseEntity.class);
         } else if (dto.getType().equals(AdTypes.SMS)) {
-            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),smsCallbackUrl,"NOT_SENT"),ResponseEntity.class);
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"NOT_SENT","sms"),ResponseEntity.class);
         }
     }
 

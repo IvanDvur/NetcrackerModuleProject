@@ -64,6 +64,7 @@ public class OrderApi {
         }
         try {
             String dto = restTemplate.getForObject(messageForRetryURL, String.class);
+            topicSplitterService.processFailedMessage(dto);
 
         } catch (HttpClientErrorException e) {
             log.debug("No Retry Messages");

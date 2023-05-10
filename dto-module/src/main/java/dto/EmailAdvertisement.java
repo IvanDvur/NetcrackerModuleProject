@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EmailAdvertisement {
+public class EmailAdvertisement implements AdvertismentInterface{
     private String text;
     private String template;
     private String topic;

@@ -13,7 +13,7 @@ import java.io.File;
 @NoArgsConstructor
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MessengerAdvertisement {
+public class MessengerAdvertisement implements AdvertismentInterface {
 
     private File image;
 

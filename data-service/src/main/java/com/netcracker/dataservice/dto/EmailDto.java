@@ -22,9 +22,11 @@ public class EmailDto {
 
     public static EmailDto convertToDto(EmailAdvertisement ea) {
         String placeholders = ea.getPlaceholders();
-        Map<String, String> placeholdersDto = Splitter.on(",")
+        Map<String, String> placeholdersDto = null;
+        if(placeholders!=null){
+        placeholdersDto = Splitter.on(",")
                 .withKeyValueSeparator(":")
-                .split(placeholders);
+                .split(placeholders);}
         return new EmailDto(ea.getTemplate(), ea.getTopic(), placeholdersDto, ea.getImage());
     }
 }

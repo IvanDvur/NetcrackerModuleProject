@@ -27,10 +27,10 @@ logging:
 rest:
   address: http://localhost:8080/order
   callback_address: http://localhost:8080/schedule
-  retry_address: http://localhost:8080/schedule/retry
+  retry_address: http://localhost:8080/failedOrder
   expired_address: http://localhost:8080/schedule/expired
-  callback_sms_address: http://localhost:8080/schedule/sms
-  callback_email_address: http://localhost:8080/schedule/email
+
+  callback_generic_address: http://localhost:8080/schedule
 service:
   medium_load: 10
   high_load: 20

@@ -14,10 +14,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class SuccessMessageConsumer {
 
-    @Value("${rest.callback_sms_address}")
-    private String smsCallbackUrl;
-    @Value("${rest.callback_email_address}")
-    private String emailCallbackUrl;
+    @Value("${rest.callback_generic_address}")
+    private String callbackUrl;
 
     private RestTemplate restTemplate;
 
@@ -29,9 +27,9 @@ public class SuccessMessageConsumer {
     @KafkaListener(topics = "t.success",groupId = "my_group")
     public void consumeSuccessMessages(UpdateStatusDto dto){
         if(dto.getType().equals(AdTypes.EMAIL)){
-            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),emailCallbackUrl,"SENT"),ResponseEntity.class);
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"SENT","email"),ResponseEntity.class);
         } else if (dto.getType().equals(AdTypes.SMS)) {
-            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),smsCallbackUrl,"SENT"),ResponseEntity.class);
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"SENT","sms"),ResponseEntity.class);
         }
     }
 

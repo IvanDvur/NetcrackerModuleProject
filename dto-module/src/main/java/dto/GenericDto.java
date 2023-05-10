@@ -43,8 +43,8 @@ public class GenericDto<T> {
         this.clientDtoSet = clientDtoSet;
     }
 
-    public static String prepareStatusUrl(String scheduleId, String baseUrl, String status) {
-        return UriComponentsBuilder.fromHttpUrl(baseUrl)
+    public static String prepareStatusUrl(String scheduleId, String baseUrl, String status,String type) {
+        return UriComponentsBuilder.fromHttpUrl(baseUrl).pathSegment(type)
                 .queryParam("id", scheduleId)
                 .queryParam("status", status)
                 .build().toUriString();

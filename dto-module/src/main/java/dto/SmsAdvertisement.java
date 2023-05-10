@@ -3,7 +3,7 @@ package dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SmsAdvertisement {
+public class SmsAdvertisement implements AdvertismentInterface{
 
     private String text;
 
