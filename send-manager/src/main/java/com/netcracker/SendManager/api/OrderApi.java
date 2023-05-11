@@ -80,7 +80,7 @@ public class OrderApi {
         }
         try {
             String dto = restTemplate.getForObject(expiredMessageURL, String.class);
-
+            topicSplitterService.processFailedMessage(dto);
         } catch (HttpClientErrorException e) {
             log.debug("No expired Messages");
         } catch (ResourceAccessException e) {

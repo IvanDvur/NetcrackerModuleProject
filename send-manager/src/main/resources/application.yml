@@ -28,7 +28,7 @@ rest:
   address: http://localhost:8080/order
   callback_address: http://localhost:8080/schedule
   retry_address: http://localhost:8080/failedOrder
-  expired_address: http://localhost:8080/schedule/expired
+  expired_address: http://localhost:8080/expired
 
   callback_generic_address: http://localhost:8080/schedule
 service:

@@ -16,4 +16,6 @@ public interface ScheduleRepo extends CrudRepository<Schedule, UUID> {
     List<Schedule> findAllByTimeToSendBetweenAndEmailStatusOrSmsStatus(LocalDateTime dateTimeOfRequest, LocalDateTime endRange, SendStatus waitingStatus, SendStatus smsWaitingStatus);
 
     List<Schedule> findAllBySmsStatusIsInOrEmailStatusIsIn(Collection<SendStatus> smsStatus, Collection<SendStatus> emailStatus);
+
+
 }
