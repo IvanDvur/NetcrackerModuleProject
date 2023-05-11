@@ -114,7 +114,7 @@ public class OrderService {
                 dt.getDayOfMonth(),
                 dt.getHour(),
                 dt.getMinute());
-        List<Schedule> schedules = scheduleRepo.findAllByTimeToSendBetweenAndEmailStatusAndSmsStatus(dt, timeOfRequest.plusMinutes(30),
+        List<Schedule> schedules = scheduleRepo.findAllByTimeToSendBetweenAndEmailStatusOrSmsStatus(dt, timeOfRequest.plusMinutes(30),
                 SendStatus.WAITING, SendStatus.WAITING);
         Set<SendingOrder> orders = schedules.stream().map(x -> x.getOrder()).collect(Collectors.toSet());
         List<OrderDto> orderDtos = new ArrayList<>();
