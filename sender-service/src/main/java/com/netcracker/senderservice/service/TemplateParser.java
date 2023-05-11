@@ -3,6 +3,7 @@ package com.netcracker.senderservice.service;
 import dto.ClientDto;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -13,12 +14,15 @@ public class TemplateParser {
 
     private Configuration configuration;
 
+
+    @Autowired
     public TemplateParser(Configuration configuration) {
         this.configuration=configuration;
         try {
-            File templateDir = new File("src/main/resources/templates/");
-            if(templateDir.isDirectory() && !templateDir.exists()){
-                templateDir.mkdir();
+            File templateDir = new File("sender-service/src/main/resources/templates");
+            if(!templateDir.exists()){
+                templateDir.mkdirs();
+                System.out.println("Директория создана");
             }
             configuration.setDirectoryForTemplateLoading(templateDir);
         } catch (IOException e) {
@@ -35,8 +39,8 @@ public class TemplateParser {
         return stringWriter.getBuffer().toString();
     }
 
-    static void writeTemplateFile(String template) {
-        File file = new File("src/main/resources/templates/template.ftlh");
+    public static void writeTemplateFile(String template) {
+        File file = new File("sender-service/src/main/resources/templates/template.ftlh");
         try (BufferedWriter bf = new BufferedWriter(new FileWriter(file))) {
             bf.write(template);
         } catch (IOException e) {
