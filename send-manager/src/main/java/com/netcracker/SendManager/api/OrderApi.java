@@ -73,18 +73,18 @@ public class OrderApi {
         }
     }
 
-    @Scheduled(fixedRate = 10000)
-    public void getExpiredMessages() {
-        if (OrderScheduler.schedulerLoad > mediumLoad) {
-            return;
-        }
-        try {
-            String dto = restTemplate.getForObject(expiredMessageURL, String.class);
-            topicSplitterService.processFailedMessage(dto);
-        } catch (HttpClientErrorException e) {
-            log.debug("No expired Messages");
-        } catch (ResourceAccessException e) {
-            log.warn("No connection to data-service");
-        }
-    }
+//    @Scheduled(fixedRate = 10000)
+//    public void getExpiredMessages() {
+//        if (OrderScheduler.schedulerLoad > mediumLoad) {
+//            return;
+//        }
+//        try {
+//            String dto = restTemplate.getForObject(expiredMessageURL, String.class);
+//            topicSplitterService.processFailedMessage(dto);
+//        } catch (HttpClientErrorException e) {
+//            log.debug("No expired Messages");
+//        } catch (ResourceAccessException e) {
+//            log.warn("No connection to data-service");
+//        }
+//    }
 }
