@@ -56,6 +56,7 @@ public class OrderService {
             order.setClients(csvParser.parseCsvToList(file));
             orderRepository.save(order);
             for (Schedule s : order.getSchedule()) {
+                setInitialStatus(s,order.getSendTypes());
                 s.setOrder(order);
                 scheduleRepo.save(s);
             }
@@ -130,5 +131,19 @@ public class OrderService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
+    }
+
+
+    private void setInitialStatus(Schedule schedule, String sendTypes){
+        if (sendTypes.contains("SMS")){
+            schedule.setSmsStatus(SendStatus.WAITING);
+        }else{
+            schedule.setSmsStatus(SendStatus.NOT_REQUESTED);
+        }
+        if (sendTypes.contains("EMAIL")){
+            schedule.setEmailStatus(SendStatus.WAITING);
+        }else{
+            schedule.setEmailStatus(SendStatus.NOT_REQUESTED);
+        }
     }
 }

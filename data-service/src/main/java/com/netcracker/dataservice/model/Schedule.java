@@ -30,9 +30,9 @@ public class Schedule {
     @ManyToOne(cascade = CascadeType.PERSIST)
     private SendingOrder order;
     @Enumerated(EnumType.STRING)
-    private SendStatus emailStatus = SendStatus.WAITING;
+    private SendStatus emailStatus;
     @Enumerated(EnumType.STRING)
-    private SendStatus smsStatus = SendStatus.WAITING;
+    private SendStatus smsStatus;
     private Integer retriesCount = 0;
 
     @Override
@@ -45,4 +45,6 @@ public class Schedule {
                 ", retriesCount=" + retriesCount +
                 '}';
     }
+
+
 }

@@ -16,7 +16,11 @@ public class TemplateParser {
     public TemplateParser(Configuration configuration) {
         this.configuration=configuration;
         try {
-            configuration.setDirectoryForTemplateLoading(new File("sender-service/src/main/resources/templates/"));
+            File templateDir = new File("src/main/resources/templates/");
+            if(templateDir.isDirectory() && !templateDir.exists()){
+                templateDir.mkdir();
+            }
+            configuration.setDirectoryForTemplateLoading(templateDir);
         } catch (IOException e) {
             System.out.println("Некорректная директория для сохранения темплейта");
             e.printStackTrace();
@@ -32,7 +36,7 @@ public class TemplateParser {
     }
 
     static void writeTemplateFile(String template) {
-        File file = new File("sender-service/src/main/resources/templates/template.ftlh");
+        File file = new File("src/main/resources/templates/template.ftlh");
         try (BufferedWriter bf = new BufferedWriter(new FileWriter(file))) {
             bf.write(template);
         } catch (IOException e) {
