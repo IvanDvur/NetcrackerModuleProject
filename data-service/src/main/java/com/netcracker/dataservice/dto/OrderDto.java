@@ -1,14 +1,14 @@
 package com.netcracker.dataservice.dto;
 
-
+import com.netcracker.dataservice.model.Client;
 import com.netcracker.dataservice.model.Schedule;
 import com.netcracker.dataservice.model.SendingOrder;
 import com.netcracker.dataservice.model.advertisement.MessengerAdvertisement;
 import com.netcracker.dataservice.model.advertisement.SmsAdvertisement;
+import dto.ClientDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +26,7 @@ public class OrderDto {
 
     /**
      * Подготавливаем OrderDto для отправки в SendManager
+     *
      * @param order SendingOrder для преобразования в dto
      * @return
      */
@@ -34,9 +35,7 @@ public class OrderDto {
          * Преобразуем полную информацию о клиентах в dto
          */
         Set<ClientDto> clientDto = order.getClients().stream()
-                .map(client -> new ClientDto(client.getFirstName(),
-                        client.getEmail(),
-                        client.getPhoneNumber()))
+                .map(Client::convertToDto)
                 .collect(Collectors.toSet());
 
         /**
@@ -45,6 +44,8 @@ public class OrderDto {
         return new OrderDto(EmailDto.convertToDto(order.getEmailAdvertisement()),
                 order.getSmsAdvertisement(),
                 order.getMessengerAdvertisement(),
-                clientDto, order.getSendTypes(),timeToSend);
+                clientDto, order.getSendTypes(), timeToSend);
     }
+
+
 }

@@ -26,8 +26,6 @@ public class EmailAdvertisement extends Advertisement{
 
     private String topic;
 
-    private String placeholders;
-
     private File image;
 
     public EmailAdvertisement(String text) {

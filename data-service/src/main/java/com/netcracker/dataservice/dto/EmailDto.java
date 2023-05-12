@@ -16,17 +16,10 @@ public class EmailDto {
 
     private String template;
     private String topic;
-    private Map<String, String> placeholders;
     private File image;
 
 
     public static EmailDto convertToDto(EmailAdvertisement ea) {
-        String placeholders = ea.getPlaceholders();
-        Map<String, String> placeholdersDto = null;
-        if(placeholders!=null){
-        placeholdersDto = Splitter.on(",")
-                .withKeyValueSeparator(":")
-                .split(placeholders);}
-        return new EmailDto(ea.getTemplate(), ea.getTopic(), placeholdersDto, ea.getImage());
+        return new EmailDto(ea.getTemplate(), ea.getTopic(), ea.getImage());
     }
 }

@@ -48,7 +48,7 @@ public class MailSender {
             for (ClientDto clientDto : dto.getClientDtoSet()) {
                 InternetAddress address = new InternetAddress(clientDto.getEmail());
                 msg.setRecipient(Message.RecipientType.TO, address);
-                msg.setContent(templateParser.parseTemplate(clientDto, ea.getPlaceholders()), "text/html;charset=utf-8");
+                msg.setContent(templateParser.parseTemplate(clientDto), "text/html;charset=utf-8");
                 javaMailSender.send(msg);
                 System.out.println("Email has been sent to " + clientDto.getEmail());
             }

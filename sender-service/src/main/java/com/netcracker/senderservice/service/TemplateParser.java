@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -31,10 +32,10 @@ public class TemplateParser {
         }
     }
 
-    public String parseTemplate(ClientDto client, Map<String,String> placeholders) throws IOException, TemplateException {
+    public String parseTemplate(ClientDto client) throws IOException, TemplateException {
         StringWriter stringWriter = new StringWriter();
-        Map<String, String> model = placeholders;
-        model.put("user", client.getFirstName());
+        Map<String, ClientDto> model = new HashMap<>();
+        model.put("user", client);
         configuration.getTemplate("template.ftlh").process(model, stringWriter);
         return stringWriter.getBuffer().toString();
     }

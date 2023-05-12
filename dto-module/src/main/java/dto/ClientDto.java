@@ -2,6 +2,8 @@ package dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Map;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientDto {
@@ -9,14 +11,24 @@ public class ClientDto {
     private String firstName;
     private String email;
     private String phoneNumber;
+    private Map<String,String> properties;
 
-    public ClientDto(String firstName, String email, String phoneNumber) {
+    public ClientDto(String firstName, String email, String phoneNumber,Map<String,String> properties) {
         this.firstName = firstName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.properties = properties;
     }
 
     public ClientDto() {
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 
     public String getFirstName() {
@@ -42,4 +54,5 @@ public class ClientDto {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
 }
