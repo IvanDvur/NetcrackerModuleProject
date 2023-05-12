@@ -44,9 +44,11 @@ public class MailSender {
             msg.setSentDate(new Date());
             msg.setSubject(ea.getTopic());//топик
             msg.setFrom(fromUsername);
+            System.out.println(fromUsername);
             TemplateParser.writeTemplateFile(template);
             for (ClientDto clientDto : dto.getClientDtoSet()) {
                 InternetAddress address = new InternetAddress(clientDto.getEmail());
+                System.out.println(clientDto.getEmail());
                 msg.setRecipient(Message.RecipientType.TO, address);
                 msg.setContent(templateParser.parseTemplate(clientDto), "text/html;charset=utf-8");
                 javaMailSender.send(msg);
