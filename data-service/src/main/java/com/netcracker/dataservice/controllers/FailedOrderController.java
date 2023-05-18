@@ -25,7 +25,6 @@ public class FailedOrderController {
     @GetMapping
     public List<FailedDto> getOrdersByDate() {
         List<FailedDto> orderDtos =  failedMessageService.getFailedOrders();
-
         return orderDtos;
     }
 }

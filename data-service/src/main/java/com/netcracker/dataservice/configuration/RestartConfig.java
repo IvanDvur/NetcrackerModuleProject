@@ -18,7 +18,7 @@ public class RestartConfig {
     private ScheduleRepository scheduleRepository;
 
     @Bean
-    public CommandLineRunner commandLineRunner() {
+    public CommandLineRunner commandLineRunner(ScheduleRepository scheduleRepository) {
         return args -> {
             Set<Schedule> expiredSchedules = scheduleRepository.findAllByTimeToSendIsBefore(LocalDateTime.now());
             for (Schedule s : expiredSchedules) {
