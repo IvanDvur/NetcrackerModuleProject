@@ -2,7 +2,7 @@ package com.netcracker.dataservice.service;
 
 import com.netcracker.dataservice.dto.FailedDto;
 import com.netcracker.dataservice.model.Schedule;
-import com.netcracker.dataservice.repositories.ScheduleRepo;
+import com.netcracker.dataservice.repositories.ScheduleRepository;
 import dto.SendStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +14,15 @@ import java.util.List;
 @Service
 public class ExpiredMessageService {
 
-    ScheduleRepo scheduleRepo;
+    ScheduleRepository scheduleRepository;
 
-    public ExpiredMessageService(ScheduleRepo scheduleRepo) {
-        this.scheduleRepo = scheduleRepo;
+    public ExpiredMessageService(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
     }
 
     public ResponseEntity<List<FailedDto>> getExpiredDtos(){
         List<SendStatus> expiredStatus = List.of(SendStatus.EXPIRED);
-        List<Schedule> expiredSchedule = scheduleRepo.findAllBySmsStatusIsInOrEmailStatusIsIn(expiredStatus,expiredStatus);
+        List<Schedule> expiredSchedule = scheduleRepository.findAllBySmsStatusIsInOrEmailStatusIsIn(expiredStatus,expiredStatus);
         List<FailedDto> expiredDtos = new ArrayList<>();
         expiredSchedule.forEach(schedule -> {
             SendStatus smsStatus=schedule.getSmsStatus();

@@ -49,10 +49,10 @@ public class UpdateOrderController {
      * Очищает список клиентов для конфига и удаляет их из дб
      * @param id - id конфига, клиентов которого требуется удалить
      */
-    @DeleteMapping("/deleteClients/{id}")
-    public void deleteClientsByConfigId(@PathVariable("id") UUID id){
-        updateService.deleteClientByOrderId(id);
-    }
+//    @DeleteMapping("/deleteClients/{id}")
+//    public void deleteClientsByConfigId(@PathVariable("id") UUID id){
+//        updateService.deleteClientByOrderId(id);
+//    }
 
     /**
      * Удаляет рекламу заданного типа из конфига и из дб

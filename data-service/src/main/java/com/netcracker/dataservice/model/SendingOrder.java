@@ -38,8 +38,8 @@ public class SendingOrder {
     @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private MessengerAdvertisement messengerAdvertisement;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
-    private Set<Client> clients;
+    @OneToOne
+    private MailingList mailingList;
 
     @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Schedule> schedule;
@@ -59,7 +59,6 @@ public class SendingOrder {
                 ", emailAdvertisement=" + emailAdvertisement +
                 ", smsAdvertisement=" + smsAdvertisement +
                 ", messengerAdvertisement=" + messengerAdvertisement +
-                ", clients=" + clients +
                 ", sendTypes='" + sendTypes + '\'' +
                 '}';
     }

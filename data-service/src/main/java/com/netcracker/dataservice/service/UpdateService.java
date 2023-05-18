@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.dataservice.model.*;
 import com.netcracker.dataservice.repositories.OrderRepository;
-import com.netcracker.dataservice.repositories.ScheduleRepo;
+import com.netcracker.dataservice.repositories.ScheduleRepository;
 import com.netcracker.dataservice.service.converters.CsvParser;
 import dto.AdTypes;
 import dto.SendStatus;
@@ -27,15 +27,15 @@ public class UpdateService {
     private final CsvParser csvParser;
     private final ObjectMapper mapper;
     private final OrderRepository orderRepository;
-    private final ScheduleRepo scheduleRepo;
+    private final ScheduleRepository scheduleRepository;
 
     @Autowired
     public UpdateService(CsvParser csvParser,
                          OrderRepository orderRepository,
-                         ScheduleRepo scheduleRepo) {
+                         ScheduleRepository scheduleRepository) {
         this.csvParser = csvParser;
         this.orderRepository = orderRepository;
-        this.scheduleRepo = scheduleRepo;
+        this.scheduleRepository = scheduleRepository;
         this.mapper = new ObjectMapper();
     }
 
@@ -88,17 +88,16 @@ public class UpdateService {
             Optional<SendingOrder> orderToUpdate = orderRepository.findById(UUID.fromString(id));
             if (orderToUpdate.isPresent()) {
                 SendingOrder order = orderToUpdate.get();
-                Set<Client> clientsToUpdate = new HashSet<>(order.getClients());
+                Set<Client> clientsToUpdate = new HashSet<>(order.getMailingList().getClients());
                 Set<Client> newClients = csvParser.parseCsvToList(file);
                 clientsToUpdate.addAll(newClients);
-                order.setClients(new HashSet<>(clientsToUpdate));
+                order.getMailingList().setClients(clientsToUpdate);
                 orderRepository.save(order);
                 return new ResponseEntity<>(order, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
 
     /**
@@ -106,15 +105,15 @@ public class UpdateService {
      *
      * @param id - id конфига
      */
-    public void deleteClientByOrderId(UUID id) {
-        Optional<SendingOrder> optionalOrder = orderRepository.findById(id);
-        if (optionalOrder.isPresent()) {
-            SendingOrder order = optionalOrder.get();
-            Set<Client> clients = order.getClients();
-            order.getClients().removeAll(clients);
-            orderRepository.save(order);
-        }
-    }
+//    public void deleteClientByOrderId(UUID id) {
+//        Optional<SendingOrder> optionalOrder = orderRepository.findById(id);
+//        if (optionalOrder.isPresent()) {
+//            SendingOrder order = optionalOrder.get();
+//            MailingList mailingList = order.getMailingList();
+//            order.getClients().removeAll(clients);
+//            orderRepository.save(order);
+//        }
+//    }
 
     /**
      * Удаляет рекламу указанного типа из конфига
@@ -152,15 +151,15 @@ public class UpdateService {
      * @return
      */
     public void updateSchedule(Schedule schedule) {
-        Schedule scheduleToUpdate = scheduleRepo.findById(schedule.getId()).get();
+        Schedule scheduleToUpdate = scheduleRepository.findById(schedule.getId()).get();
         scheduleToUpdate.setEmailStatus(schedule.getEmailStatus());
         scheduleToUpdate.setSmsStatus(schedule.getSmsStatus());
         scheduleToUpdate.setRetriesCount(schedule.getRetriesCount());
-        scheduleRepo.save(scheduleToUpdate);
+        scheduleRepository.save(scheduleToUpdate);
     }
 
     public void updateEmailStatus(String id, String status) {
-        Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
+        Optional<Schedule> optionalSchedule = scheduleRepository.findById(UUID.fromString(id));
         if (optionalSchedule.isPresent()) {
             Schedule schedule = optionalSchedule.get();
             if (status.equals("SENT") || status.equals("PROCESSED")) {
@@ -171,12 +170,12 @@ public class UpdateService {
             } else {
                 schedule.setEmailStatus(SendStatus.EXPIRED);
             }
-            scheduleRepo.save(schedule);
+            scheduleRepository.save(schedule);
         }
     }
 
     public  void updateSmsStatus(String id, String status) {
-        Optional<Schedule> optionalSchedule = scheduleRepo.findById(UUID.fromString(id));
+        Optional<Schedule> optionalSchedule = scheduleRepository.findById(UUID.fromString(id));
         if (optionalSchedule.isPresent()) {
             Schedule schedule = optionalSchedule.get();
             if (status.equals("SENT") || status.equals("PROCESSED")) {
@@ -187,7 +186,7 @@ public class UpdateService {
             } else {
                 schedule.setSmsStatus(SendStatus.EXPIRED);
             }
-            scheduleRepo.save(schedule);
+            scheduleRepository.save(schedule);
         }
     }
 }

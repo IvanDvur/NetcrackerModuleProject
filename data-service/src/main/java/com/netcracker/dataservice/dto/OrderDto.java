@@ -34,10 +34,9 @@ public class OrderDto {
         /**
          * Преобразуем полную информацию о клиентах в dto
          */
-        Set<ClientDto> clientDto = order.getClients().stream()
+        Set<ClientDto> clientDto = order.getMailingList().getClients().stream()
                 .map(Client::convertToDto)
                 .collect(Collectors.toSet());
-
         /**
          * Возвращаем конфиг dto на основе информации из тела конфига и dto клиентов
          */
