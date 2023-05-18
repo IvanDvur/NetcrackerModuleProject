@@ -37,7 +37,6 @@ public class FailedDto {
         /**
          * Возвращаем конфиг dto на основе информации из тела конфига и dto клиентов
          */
-
         return new FailedDto(EmailDto.convertToDto(order.getEmailAdvertisement()),
                 order.getSmsAdvertisement(),
                 order.getMessengerAdvertisement(),

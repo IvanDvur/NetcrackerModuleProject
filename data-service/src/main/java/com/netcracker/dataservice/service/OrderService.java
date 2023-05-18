@@ -6,7 +6,7 @@ import com.netcracker.dataservice.dto.OrderDto;
 import com.netcracker.dataservice.model.*;
 import com.netcracker.dataservice.repositories.ClientRepository;
 import com.netcracker.dataservice.repositories.OrderRepository;
-import com.netcracker.dataservice.repositories.ScheduleRepo;
+import com.netcracker.dataservice.repositories.ScheduleRepository;
 import com.netcracker.dataservice.service.converters.CsvParser;
 import dto.SendStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +26,19 @@ public class OrderService {
     private final CsvParser csvParser;
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
-    private final ScheduleRepo scheduleRepo;
+    private final ScheduleRepository scheduleRepository;
 
     @Autowired
     public OrderService(ObjectMapper mapper,
                         CsvParser csvParser,
                         OrderRepository orderRepository,
                         ClientRepository clientRepository,
-                        ScheduleRepo scheduleRepo) {
+                        ScheduleRepository scheduleRepository) {
         this.mapper = mapper;
         this.csvParser = csvParser;
         this.orderRepository = orderRepository;
         this.clientRepository = clientRepository;
-        this.scheduleRepo = scheduleRepo;
+        this.scheduleRepository = scheduleRepository;
     }
 
     /**
@@ -51,14 +51,14 @@ public class OrderService {
     public ResponseEntity<SendingOrder> postOrder(String orderDto, MultipartFile file) {
         try {
             SendingOrder order = mapper.readValue(orderDto, SendingOrder.class);
-            Customer customer = new Customer("NikePR", "nikePR@gmail.com", "password");
-            order.setCustomer(customer);
+//            Customer customer = new Customer("NikePR", "nikePR@gmail.com", "password");
+//            order.setCustomer(customer);
             order.setClients(csvParser.parseCsvToList(file));
             orderRepository.save(order);
             for (Schedule s : order.getSchedule()) {
                 setInitialStatus(s,order.getSendTypes());
                 s.setOrder(order);
-                scheduleRepo.save(s);
+                scheduleRepository.save(s);
             }
             return new ResponseEntity<>(order, HttpStatus.CREATED);
         } catch (JsonProcessingException e) {
@@ -114,7 +114,7 @@ public class OrderService {
                 dt.getDayOfMonth(),
                 dt.getHour(),
                 dt.getMinute());
-        List<Schedule> schedules = scheduleRepo.findAllByTimeToSendBetweenAndEmailStatusOrSmsStatus(dt, timeOfRequest.plusMinutes(30),
+        List<Schedule> schedules = scheduleRepository.findAllByTimeToSendBetweenAndEmailStatusOrSmsStatus(dt, timeOfRequest.plusMinutes(30),
                 SendStatus.WAITING, SendStatus.WAITING);
         Set<SendingOrder> orders = schedules.stream().map(x -> x.getOrder()).collect(Collectors.toSet());
         List<OrderDto> orderDtos = new ArrayList<>();
