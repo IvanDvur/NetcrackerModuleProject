@@ -27,7 +27,7 @@ public class CsvParserImpl implements CsvParser {
 
     @Override
     public Set<Client> parseCsvToList(MultipartFile file) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(),"UTF-8"))) {
             List<Client> clientList = new CsvToBeanBuilder(br)
                     .withType(Client.class)
                     .build()

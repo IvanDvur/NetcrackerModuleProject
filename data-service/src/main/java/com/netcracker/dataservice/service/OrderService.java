@@ -51,8 +51,6 @@ public class OrderService {
     public ResponseEntity<SendingOrder> postOrder(String orderDto, MultipartFile file) {
         try {
             SendingOrder order = mapper.readValue(orderDto, SendingOrder.class);
-//            Customer customer = new Customer("NikePR", "nikePR@gmail.com", "password");
-//            order.setCustomer(customer);
             order.setClients(csvParser.parseCsvToList(file));
             orderRepository.save(order);
             for (Schedule s : order.getSchedule()) {
