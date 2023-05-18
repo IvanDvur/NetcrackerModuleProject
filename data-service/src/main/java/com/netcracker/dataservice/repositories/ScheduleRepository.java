@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -17,5 +18,6 @@ public interface ScheduleRepository extends CrudRepository<Schedule, UUID> {
 
     List<Schedule> findAllBySmsStatusIsInOrEmailStatusIsIn(Collection<SendStatus> smsStatus, Collection<SendStatus> emailStatus);
 
+    Set<Schedule> findAllByTimeToSendIsBefore(LocalDateTime time);
 
 }

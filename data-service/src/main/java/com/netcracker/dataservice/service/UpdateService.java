@@ -88,17 +88,16 @@ public class UpdateService {
             Optional<SendingOrder> orderToUpdate = orderRepository.findById(UUID.fromString(id));
             if (orderToUpdate.isPresent()) {
                 SendingOrder order = orderToUpdate.get();
-                Set<Client> clientsToUpdate = new HashSet<>(order.getClients());
+                Set<Client> clientsToUpdate = new HashSet<>(order.getMailingList().getClients());
                 Set<Client> newClients = csvParser.parseCsvToList(file);
                 clientsToUpdate.addAll(newClients);
-                order.setClients(new HashSet<>(clientsToUpdate));
+                order.getMailingList().setClients(clientsToUpdate);
                 orderRepository.save(order);
                 return new ResponseEntity<>(order, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
 
     /**
@@ -106,15 +105,15 @@ public class UpdateService {
      *
      * @param id - id конфига
      */
-    public void deleteClientByOrderId(UUID id) {
-        Optional<SendingOrder> optionalOrder = orderRepository.findById(id);
-        if (optionalOrder.isPresent()) {
-            SendingOrder order = optionalOrder.get();
-            Set<Client> clients = order.getClients();
-            order.getClients().removeAll(clients);
-            orderRepository.save(order);
-        }
-    }
+//    public void deleteClientByOrderId(UUID id) {
+//        Optional<SendingOrder> optionalOrder = orderRepository.findById(id);
+//        if (optionalOrder.isPresent()) {
+//            SendingOrder order = optionalOrder.get();
+//            MailingList mailingList = order.getMailingList();
+//            order.getClients().removeAll(clients);
+//            orderRepository.save(order);
+//        }
+//    }
 
     /**
      * Удаляет рекламу указанного типа из конфига

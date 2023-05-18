@@ -10,6 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, UUID> {
-    @Query("select mc.clients from SendingOrder mc where mc.id=:uuid")
-    List<Client> getAllByOrderId(UUID uuid);
+
 }

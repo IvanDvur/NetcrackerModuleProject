@@ -31,7 +31,7 @@ public class FailedDto {
         /**
          * Преобразуем полную информацию о клиентах в dto
          */
-        Set<ClientDto> clientDto = order.getClients().stream().map(Client::convertToDto)
+        Set<ClientDto> clientDto = order.getMailingList().getClients().stream().map(Client::convertToDto)
                 .collect(Collectors.toSet());
 
         /**

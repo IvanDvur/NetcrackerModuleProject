@@ -41,14 +41,13 @@ public class OrderController {
     }
 
     /**
-     * Добавляет новый конфиг в дб
-     *
+     * Добавляет новый конфиг в дд
      * @param orderDto
-     * @param file
+     *
      */
     @PostMapping(value = "/add", consumes = "multipart/form-data")
-    public ResponseEntity<SendingOrder> postOrder(@RequestParam("model") String orderDto) {
-       ResponseEntity<SendingOrder> newOrder = orderService.postOrder(orderDto);
+    public ResponseEntity<SendingOrder> postOrder(@RequestParam("model") String orderDto,@RequestHeader("Authorization") String token) {
+       ResponseEntity<SendingOrder> newOrder = orderService.postOrder(orderDto,token);
        logger.info("Adding new order to database {}",newOrder.getBody());
        return newOrder;
     }
@@ -59,12 +58,12 @@ public class OrderController {
      * @param uuid
      * @return
      */
-    @GetMapping("/getClientsByOrder/{id}")
-    public ResponseEntity<List<Client>> getClientsByOrderId(@PathVariable("id") UUID uuid) {
-        ResponseEntity<List<Client>> clients = orderService.getClientsByOrderId(uuid);
-        logger.info("Fetching client from order {}",uuid);
-        return clients;
-    }
+//    @GetMapping("/getClientsByOrder/{id}")
+//    public ResponseEntity<List<Client>> getClientsByOrderId(@PathVariable("id") UUID uuid) {
+//        ResponseEntity<List<Client>> clients = orderService.getClientsByOrderId(uuid);
+//        logger.info("Fetching client from order {}",uuid);
+//        return clients;
+//    }
 
     /**
      * Возвращает конфиг по его id
