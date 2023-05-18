@@ -47,9 +47,8 @@ public class OrderController {
      * @param file
      */
     @PostMapping(value = "/add", consumes = "multipart/form-data")
-    public ResponseEntity<SendingOrder> postOrder(@RequestParam("model") String orderDto,
-                                                   @RequestParam(value = "file", required = false) MultipartFile file) {
-       ResponseEntity<SendingOrder> newOrder = orderService.postOrder(orderDto, file);
+    public ResponseEntity<SendingOrder> postOrder(@RequestParam("model") String orderDto) {
+       ResponseEntity<SendingOrder> newOrder = orderService.postOrder(orderDto);
        logger.info("Adding new order to database {}",newOrder.getBody());
        return newOrder;
     }

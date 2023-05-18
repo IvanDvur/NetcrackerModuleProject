@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.dataservice.dto.OrderDto;
 import com.netcracker.dataservice.model.*;
 import com.netcracker.dataservice.repositories.ClientRepository;
+import com.netcracker.dataservice.repositories.MailingListRepository;
 import com.netcracker.dataservice.repositories.OrderRepository;
 import com.netcracker.dataservice.repositories.ScheduleRepository;
 import com.netcracker.dataservice.service.converters.CsvParser;
 import dto.SendStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
     private final ObjectMapper mapper;
@@ -27,19 +30,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final ScheduleRepository scheduleRepository;
+    private final MailingListRepository mailingListRepository;
 
-    @Autowired
-    public OrderService(ObjectMapper mapper,
-                        CsvParser csvParser,
-                        OrderRepository orderRepository,
-                        ClientRepository clientRepository,
-                        ScheduleRepository scheduleRepository) {
-        this.mapper = mapper;
-        this.csvParser = csvParser;
-        this.orderRepository = orderRepository;
-        this.clientRepository = clientRepository;
-        this.scheduleRepository = scheduleRepository;
-    }
 
     /**
      * Метод сохраняющий конфиг в дб
@@ -48,7 +40,7 @@ public class OrderService {
      * @param file      - .csv файл с клиентами
      * @return
      */
-    public ResponseEntity<SendingOrder> postOrder(String orderDto, MultipartFile file) {
+    public ResponseEntity<SendingOrder> postOrder(String orderDto, ) {
         try {
             SendingOrder order = mapper.readValue(orderDto, SendingOrder.class);
             order.setClients(csvParser.parseCsvToList(file));
