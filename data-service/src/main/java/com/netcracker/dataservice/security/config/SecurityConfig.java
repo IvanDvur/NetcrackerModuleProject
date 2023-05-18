@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/auth/**")//whitelist
+                .antMatchers("/auth/**","/order/**","/schedule/**","/failedOrder/**","/expired/**")//whitelist
                 .permitAll()
                 .anyRequest()
                 .authenticated()

@@ -168,7 +168,7 @@ public class UpdateService {
                 schedule.setEmailStatus(SendStatus.valueOf(status));
                 schedule.setRetriesCount(schedule.getRetriesCount() + 1);
             } else {
-                schedule.setEmailStatus(SendStatus.EXPIRED);
+                schedule.setEmailStatus(SendStatus.FATAL);
             }
             scheduleRepository.save(schedule);
         }
@@ -184,7 +184,7 @@ public class UpdateService {
                 schedule.setSmsStatus(SendStatus.valueOf(status));
                 schedule.setRetriesCount(schedule.getRetriesCount() + 1);
             } else {
-                schedule.setSmsStatus(SendStatus.EXPIRED);
+                schedule.setSmsStatus(SendStatus.FATAL);
             }
             scheduleRepository.save(schedule);
         }
