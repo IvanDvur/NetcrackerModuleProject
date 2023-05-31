@@ -4,7 +4,6 @@ import com.netcracker.dataservice.model.Schedule;
 import dto.SendStatus;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;

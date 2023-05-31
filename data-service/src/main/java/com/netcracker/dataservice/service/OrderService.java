@@ -84,12 +84,11 @@ public class OrderService {
      * @param uuid
      * @return
      */
-    public ResponseEntity<SendingOrder> getOrderById(UUID uuid) {
-        Optional<SendingOrder> messageOrder = orderRepository.findById(uuid);
-        if (messageOrder.isPresent()) {
-            return new ResponseEntity<>(messageOrder.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Set<SendingOrder>> getAllOrdersByCustomer(String token) {
+        String jwt = token.substring(7);
+        String username = jwtService.extractUsername(jwt);
+        Set<SendingOrder> activeOrders = orderRepository.findAllByCustomerUsername(username);
+        return new ResponseEntity<>(activeOrders,HttpStatus.OK);
     }
 
     /**

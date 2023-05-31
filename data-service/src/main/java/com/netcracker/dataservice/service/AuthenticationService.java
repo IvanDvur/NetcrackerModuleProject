@@ -1,7 +1,7 @@
 package com.netcracker.dataservice.service;
 
+import com.netcracker.dataservice.dto.AuthenticationDto;
 import com.netcracker.dataservice.repositories.CustomerRepository;
-import com.netcracker.dataservice.security.AuthenticationForm;
 import com.netcracker.dataservice.security.AuthenticationResponse;
 import com.netcracker.dataservice.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +17,14 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final CustomerRepository customerRepository;
     private final JwtService jwtService;
-    public AuthenticationResponse authenticate(AuthenticationForm authenticationForm) {
+    public AuthenticationResponse authenticate(AuthenticationDto authenticationDto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authenticationForm.getUsername(),
-                        authenticationForm.getPassword()
+                        authenticationDto.getUsername(),
+                        authenticationDto.getPassword()
                 )
         );
-        var customer = customerRepository.findByUsername(authenticationForm.getUsername())
+        var customer = customerRepository.findByUsername(authenticationDto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         var jwtToken = jwtService.generateToken(customer);
         return AuthenticationResponse.builder().token(jwtToken).build();

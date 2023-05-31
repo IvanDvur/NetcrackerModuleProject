@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.security;
+package com.netcracker.dataservice.dto;
 
 import com.netcracker.dataservice.utils.PasswordMatches;
 import com.netcracker.dataservice.utils.ValidEmail;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @PasswordMatches
-public class RegistrationForm {
+public class RegistrationDto {
 
     @NotNull
     @NotEmpty

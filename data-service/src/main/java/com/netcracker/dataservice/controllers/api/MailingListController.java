@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.controllers;
+package com.netcracker.dataservice.controllers.api;
 
 
 import com.netcracker.dataservice.model.MailingList;
@@ -13,7 +13,6 @@ import java.util.Set;
 @CrossOrigin
 @RequestMapping("/lists")
 @RequiredArgsConstructor
-
 public class MailingListController {
 
     private final MailingListService mailingListService;

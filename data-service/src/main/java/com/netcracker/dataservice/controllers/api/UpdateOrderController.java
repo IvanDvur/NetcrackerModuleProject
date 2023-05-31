@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.controllers;
+package com.netcracker.dataservice.controllers.api;
 
 import com.netcracker.dataservice.model.SendingOrder;
 import com.netcracker.dataservice.service.UpdateService;
@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:8081","http://localhost:8082"})
 @RequestMapping("/update")
 public class UpdateOrderController {
 
@@ -45,14 +46,6 @@ public class UpdateOrderController {
         return updateService.updateClients(file, id);
     }
 
-    /**
-     * Очищает список клиентов для конфига и удаляет их из дб
-     * @param id - id конфига, клиентов которого требуется удалить
-     */
-//    @DeleteMapping("/deleteClients/{id}")
-//    public void deleteClientsByConfigId(@PathVariable("id") UUID id){
-//        updateService.deleteClientByOrderId(id);
-//    }
 
     /**
      * Удаляет рекламу заданного типа из конфига и из дб

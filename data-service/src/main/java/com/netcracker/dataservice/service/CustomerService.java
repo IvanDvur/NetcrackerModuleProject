@@ -13,21 +13,21 @@ import java.util.Optional;
 public class CustomerService {
 
 
-    final CustomerRepository usuarioRepository;
+    final CustomerRepository customerRepository;
 
     public CustomerService(CustomerRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+        this.customerRepository = usuarioRepository;
     }
 
     public Optional<Customer> getByEmail(String email){
-        return usuarioRepository.findByEmail(email);
+        return customerRepository.findByEmail(email);
     }
 
     public boolean existsEmail(String email){
-        return usuarioRepository.existsByEmail(email);
+        return customerRepository.existsByEmail(email);
     }
 
     public Customer save(Customer customer){
-        return usuarioRepository.save(customer);
+        return customerRepository.save(customer);
     }
 }

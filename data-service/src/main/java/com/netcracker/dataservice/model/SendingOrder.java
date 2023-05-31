@@ -1,5 +1,6 @@
 package com.netcracker.dataservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.netcracker.dataservice.model.advertisement.EmailAdvertisement;
 import com.netcracker.dataservice.model.advertisement.MessengerAdvertisement;
 import com.netcracker.dataservice.model.advertisement.SmsAdvertisement;
@@ -21,9 +22,11 @@ import java.util.UUID;
 public class SendingOrder {
 
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     private Customer customer;
 
@@ -35,6 +38,7 @@ public class SendingOrder {
     @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private SmsAdvertisement smsAdvertisement;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private MessengerAdvertisement messengerAdvertisement;
 
@@ -44,6 +48,7 @@ public class SendingOrder {
     @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Schedule> schedule;
 
+    @JsonIgnore
     private String sendTypes;
 
     /**

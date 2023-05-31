@@ -33,59 +33,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    //    private AuthenticationManager authenticationManager;
-//
-//
-//    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
-//        this.authenticationManager = authenticationManager;
-//    }
-//
-//    //Вызывается когда мы отправляем POST запрос to /login
-//    /*
-//    мы передаем {"username":"ilya","password":"ilya123"} в теле запроса
-//    * */
-//    @Override
-//    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-//        AuthenticationForm credentials= null;
-//        try {
-//            credentials = new ObjectMapper().readValue(request.getInputStream(), AuthenticationForm.class);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        //Создается токен логина
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-//                credentials.getUsername(),
-//                credentials.getPassword(),
-//                new ArrayList<>());
-//
-//        Authentication auth = authenticationManager.authenticate(authenticationToken);
-//        return auth;
-//    }
-//
-//    @Override
-//    protected void successfulAuthentication(HttpServletRequest request,
-//                                            HttpServletResponse response,
-//                                            FilterChain chain,
-//                                            Authentication authResult) throws IOException, ServletException {
-//        //получаем пользователя по результатам проверки
-//        UserPrincipal principal = (UserPrincipal) authResult.getPrincipal();
-//
-//        //Создаем JWT Token
-//        String token = JWT.create()
-//                .withSubject(principal.getUsername())
-//                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-//                .withIssuer(request.getRequestURL().toString())
-//                .withClaim("roles", String.valueOf(principal.getAuthorities()))
-//                .sign(HMAC512(JwtProperties.SECRET.getBytes()));
-//
-//
-//        //добавляем токен в Header ответа
-//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
-//        Map<String, String> tokens = new HashMap<>();
-//        tokens.put(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
-//        response.setContentType(APPLICATION_JSON_VALUE);
-//        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-//    }
     private final JwtService jwtService;
     private final UserDetailsService userPrincipalDetailsService;
     @Override

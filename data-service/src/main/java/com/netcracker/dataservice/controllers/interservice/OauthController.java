@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.controllers;
+package com.netcracker.dataservice.controllers.interservice;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -18,14 +18,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @RestController
 @RequestMapping("/oauth")
@@ -49,15 +46,12 @@ public class OauthController {
     JwtService jwtProvider;
 
     @Autowired
-    CustomerService usuarioService;
-
-
+    CustomerService customerService;
 
 
     @PostMapping("/google")
     public ResponseEntity<TokenDto> google(@RequestBody TokenDto tokenDto) throws IOException {
         final NetHttpTransport transport = new NetHttpTransport();
-
         final JsonFactory jacksonFactory = GsonFactory.getDefaultInstance();
 
         GoogleIdTokenVerifier.Builder verifier =
@@ -66,10 +60,10 @@ public class OauthController {
         final GoogleIdToken googleIdToken = GoogleIdToken.parse(verifier.getJsonFactory(), tokenDto.getValue());
         final GoogleIdToken.Payload payload = googleIdToken.getPayload();
         Customer user = new Customer();
-        if(usuarioService.existsEmail(payload.getEmail()))
-            user = usuarioService.getByEmail(payload.getEmail()).get();
+        if(customerService.existsEmail(payload.getEmail()))
+            user = customerService.getByEmail(payload.getEmail()).get();
         else
-            user = saveUsuario(payload.getEmail());
+            user = saveUser(payload.getEmail());
         TokenDto tokenRes = login(user);
         return new ResponseEntity(tokenRes, HttpStatus.OK);
     }
@@ -84,11 +78,7 @@ public class OauthController {
         tokenDto.setValue(jwt);
         return tokenDto;
     }
-    private Customer saveUsuario(String email){
-//        Customer customer = new Customer();
-//        customer.setUsername(email);
-//        customer.setPassword(passwordEncoder.encode(secretPsw));
-
+    private Customer saveUser(String email){
         Customer customer = Customer
                 .builder()
                 .username(email)
@@ -96,8 +86,7 @@ public class OauthController {
                 .password(passwordEncoder.encode(secretPsw))
                 .role(Role.USER)
                 .build();
-
-        return usuarioService.save(customer);
+        return customerService.save(customer);
     }
 
 }

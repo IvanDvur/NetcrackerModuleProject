@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.controllers;
+package com.netcracker.dataservice.controllers.api;
 
 import com.netcracker.dataservice.model.MailingList;
 import com.netcracker.dataservice.service.ImportService;
@@ -20,7 +20,8 @@ public class ImportController {
 
     @PostMapping
     public ResponseEntity<MailingList> importClients(@RequestParam(value = "file",required = true) MultipartFile file,
-                                                     @RequestParam("name") String name, @RequestHeader("Authorization") String token) {
+                                                     @RequestParam("name") String name,
+                                                     @RequestHeader("Authorization") String token) {
         return importService.createMailingList(name,file,token);
     }
 }

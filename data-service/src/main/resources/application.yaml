@@ -1,4 +1,11 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 115939869668-iug85iudcmev0koj3dcgnhovn999240h.apps.googleusercontent.com
+            client-secret: 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
   jpa:
     hibernate:
       ddl-auto: update

@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.security;
+package com.netcracker.dataservice.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationForm {
+public class AuthenticationDto {
 
     private String username;
 

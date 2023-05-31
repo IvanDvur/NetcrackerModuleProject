@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.controllers;
+package com.netcracker.dataservice.controllers.interservice;
 
 import com.netcracker.dataservice.model.Schedule;
 import com.netcracker.dataservice.service.UpdateService;
@@ -7,9 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
+@CrossOrigin(origins = {"http://localhost:8081","http://localhost:8082"})
 @RequestMapping("/schedule")
 public class ScheduleController {
 

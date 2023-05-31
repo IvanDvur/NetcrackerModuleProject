@@ -1,6 +1,6 @@
 package com.netcracker.dataservice.utils;
 
-import com.netcracker.dataservice.security.RegistrationForm;
+import com.netcracker.dataservice.dto.RegistrationDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,7 +12,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         }
         @Override
         public boolean isValid(Object obj, ConstraintValidatorContext context){
-            RegistrationForm user = (RegistrationForm) obj;
+            RegistrationDto user = (RegistrationDto) obj;
             return user.getPassword().equals(user.getMatchingPassword());
         }
 }
