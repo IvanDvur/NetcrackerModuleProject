@@ -8,11 +8,8 @@ import com.netcracker.dataservice.repositories.MailingListRepository;
 import com.netcracker.dataservice.security.JwtService;
 import com.netcracker.dataservice.service.converters.CsvParser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

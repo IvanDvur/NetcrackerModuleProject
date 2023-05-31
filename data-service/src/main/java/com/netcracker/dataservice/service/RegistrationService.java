@@ -1,14 +1,13 @@
 package com.netcracker.dataservice.service;
 
+
 import com.netcracker.dataservice.model.Customer;
 import com.netcracker.dataservice.model.Role;
 import com.netcracker.dataservice.repositories.CustomerRepository;
 import com.netcracker.dataservice.security.AuthenticationResponse;
 import com.netcracker.dataservice.security.JwtService;
-import com.netcracker.dataservice.security.RegistrationForm;
+import com.netcracker.dataservice.dto.RegistrationDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +21,13 @@ public class RegistrationService{
     private final CustomerRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    public AuthenticationResponse registerNewUserAccount(RegistrationForm registrationForm){
-        if (emailExists(registrationForm.getEmail())) {
-            return null;
-        }
+    public AuthenticationResponse registerNewUserAccount(RegistrationDto registrationDto) {
+
         Customer customer = Customer
                 .builder()
-                .username(registrationForm.getUsername())
-                .email(registrationForm.getEmail())
-                .password(passwordEncoder.encode(registrationForm.getPassword()))
+                .username(registrationDto.getUsername())
+                .email(registrationDto.getEmail())
+                .password(passwordEncoder.encode(registrationDto.getPassword()))
                 .role(Role.USER)
                 .build();
         repository.save(customer);
@@ -38,8 +35,5 @@ public class RegistrationService{
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
-    private boolean emailExists(String email) {
-        return repository.findByEmail(email).isPresent();
-    }
 }
 

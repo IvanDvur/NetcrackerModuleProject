@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class ExpiredMessageService {
 
-    ScheduleRepository scheduleRepository;
+    private ScheduleRepository scheduleRepository;
 
     public ExpiredMessageService(ScheduleRepository scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
