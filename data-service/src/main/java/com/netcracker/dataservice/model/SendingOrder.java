@@ -48,7 +48,7 @@ public class SendingOrder {
     @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Schedule> schedule;
 
-    @JsonIgnore
+
     private String sendTypes;
 
     /**

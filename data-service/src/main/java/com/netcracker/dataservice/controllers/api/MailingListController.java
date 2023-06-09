@@ -1,6 +1,8 @@
 package com.netcracker.dataservice.controllers.api;
 
 
+import com.netcracker.dataservice.dto.MailingLIstDto;
+import com.netcracker.dataservice.model.Client;
 import com.netcracker.dataservice.model.MailingList;
 import com.netcracker.dataservice.service.MailingListService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,21 @@ public class MailingListController {
         System.out.println("Удаление");
         this.mailingListService.deleteMailingList(id,token);
         System.out.println("Лист удалён");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MailingLIstDto>getMailingListById(@PathVariable String id ){
+        return this.mailingListService.getMailingListById(id);
+    }
+    @PostMapping("/update/client")
+    public ResponseEntity<Boolean> updateClient(@RequestBody Client client){
+        return this.mailingListService.updateClient(client);
+
+    }
+    @PostMapping("/delete/client")
+    public void deleteClient(@RequestParam("id") String id){
+        this.mailingListService.deleteClient(id);
+
     }
 
 }

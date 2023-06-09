@@ -2,6 +2,8 @@ package com.netcracker.dataservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -22,6 +24,8 @@ public class MailingList {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "mailing_list_id")
+
     private Set<Client> clients;
 
     @JsonIgnore

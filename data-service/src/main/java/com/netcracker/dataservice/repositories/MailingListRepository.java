@@ -3,6 +3,7 @@ package com.netcracker.dataservice.repositories;
 import com.netcracker.dataservice.model.Client;
 import com.netcracker.dataservice.model.MailingList;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.Set;
@@ -15,5 +16,6 @@ public interface MailingListRepository extends JpaRepository<MailingList, UUID> 
     Set<Client> getAllClientsByMailingListId(UUID id);
 
     Set<MailingList> findAllByCustomerUsername(String username);
+
 
 }
