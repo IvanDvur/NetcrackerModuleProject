@@ -25,7 +25,6 @@ public class FailedMessageService {
         List<Schedule> failedSchedules = scheduleRepository.findAllBySmsStatusIsInOrEmailStatusIsIn(statusCheck,statusCheck);
         List<FailedDto>failedDtos = new ArrayList<>();
 
-
         failedSchedules.forEach(schedule -> {
             SendStatus smsStatus=schedule.getSmsStatus();
             SendStatus emailStatus = schedule.getEmailStatus();
@@ -38,9 +37,6 @@ public class FailedMessageService {
                     ||smsStatus.equals(SendStatus.FAILED)){
                 retryTypes.add("SMS");
             }
-//            else {
-//                retryTypes.add("MESSENGER");
-//            }
             failedDtos.add(FailedDto.convertToDto(schedule.getOrder(),schedule.getId().toString(),retryTypes));
         });
 

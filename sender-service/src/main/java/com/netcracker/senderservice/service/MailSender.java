@@ -5,13 +5,16 @@ import com.netcracker.senderservice.producer.Producer;
 import com.sun.mail.util.MailConnectException;
 import dto.*;
 import freemarker.template.TemplateException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
@@ -20,26 +23,22 @@ import java.util.Date;
 
 
 @Service
+@RequiredArgsConstructor
 public class MailSender {
 
-    private TemplateParser templateParser;
-    private JavaMailSender javaMailSender;
+    private final TemplateParser templateParser;
+    private final JavaMailSender javaMailSender;
+    private final RestTemplate restTemplate;
     @Value("${mail.user}")
     private String fromUsername;
-    private Producer producer;
-
-    @Autowired
-    public MailSender(TemplateParser templateParser, JavaMailSender mailSender, Producer producer) {
-        this.javaMailSender=mailSender;
-        this.templateParser = templateParser;
-        this.producer = producer;
-    }
+    private final Producer producer;
 
     public void send(GenericDto<EmailAdvertisement> dto) {
+
         EmailAdvertisement ea = dto.getAdvertisement();
         String template = new String(Base64.getDecoder().decode(ea.getTemplate()));
-        MimeMessage msg = javaMailSender.createMimeMessage();
         UpdateStatusDto updateStatusDto = new UpdateStatusDto(dto.getScheduleId(),AdTypes.EMAIL);
+        MimeMessage msg = javaMailSender.createMimeMessage();
         try {
             msg.setSentDate(new Date());
             msg.setSubject(ea.getTopic());//топик
@@ -48,7 +47,6 @@ public class MailSender {
             TemplateParser.writeTemplateFile(template);
             for (ClientDto clientDto : dto.getClientDtoSet()) {
                 InternetAddress address = new InternetAddress(clientDto.getEmail());
-                System.out.println(clientDto.getEmail());
                 msg.setRecipient(Message.RecipientType.TO, address);
                 msg.setContent(templateParser.parseTemplate(clientDto), "text/html;charset=utf-8");
                 javaMailSender.send(msg);
@@ -67,4 +65,6 @@ public class MailSender {
         }
 
     }
+
+
 }

@@ -7,15 +7,12 @@ import com.netcracker.dataservice.dto.OrderDto;
 import com.netcracker.dataservice.model.*;
 import com.netcracker.dataservice.repositories.*;
 import com.netcracker.dataservice.security.JwtService;
-import com.netcracker.dataservice.service.converters.CsvParser;
 import dto.SendStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -31,6 +28,7 @@ public class OrderService {
     private final MailingListRepository mailingListRepository;
     private final JwtService jwtService;
     private final CustomerRepository customerRepository;
+    private final SendStatusPerClientRepository sendStatusPerClientRepository;
 
     /**
      * Метод сохраняющий конфиг в дб
@@ -41,25 +39,34 @@ public class OrderService {
     public ResponseEntity<SendingOrder> postOrder(String orderDto, String token) {
         try {
             String jwt = token.substring(7);
+            String username = jwtService.extractUsername(jwt);
             SendingOrder order = mapper.readValue(orderDto, SendingOrder.class);
             JsonNode jsonNodeRoot = mapper.readTree(orderDto);
             JsonNode jsonNodeListId = jsonNodeRoot.get("mailingListId");
             String listId = jsonNodeListId.asText();
-            String username = jwtService.extractUsername(jwt);
+
             Optional<Customer> customer = customerRepository.findByUsername(username);
             if (customer.isPresent()) {
+                Set<SendStatusPerClient> sendStatusesPerClient = new HashSet<>();
                 MailingList mailingList = mailingListRepository.findById(UUID.fromString(listId)).get();
                 order.setMailingList(mailingList);
                 order.setCustomer(customer.get());
                 orderRepository.save(order);
+                for (Client client : mailingList.getClients()) {
+                    sendStatusesPerClient.add(new SendStatusPerClient(
+                            order,
+                            client,
+                            order.getSendTypes().contains("EMAIL") ? SendStatus.NOT_SENT : SendStatus.NOT_REQUESTED,
+                            order.getSendTypes().contains("SMS") ? SendStatus.NOT_SENT : SendStatus.NOT_REQUESTED));
+                }
+                sendStatusPerClientRepository.saveAll(sendStatusesPerClient);
                 for (Schedule s : order.getSchedule()) {
                     setInitialStatus(s, order.getSendTypes());
                     s.setOrder(order);
                     scheduleRepository.save(s);
                 }
                 return new ResponseEntity<>(order, HttpStatus.CREATED);
-            }
-            else {
+            } else {
                 throw new UsernameNotFoundException("User not found");
             }
         } catch (JsonProcessingException | UsernameNotFoundException e) {
@@ -67,16 +74,7 @@ public class OrderService {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    /**
-     * Метод возвращает всех клиентов по id конфига
-     *
-     * @param uuid
-     * @return
-     */
-//    public ResponseEntity<List<Client>> getClientsByOrderId(UUID uuid) {
-//        List<Client> customersById = clientRepository.getAllByOrderId(uuid);
-//        return new ResponseEntity<>(customersById, HttpStatus.OK);
-//    }
+
 
     /**
      * Возвращает конфиг по его id
@@ -88,7 +86,7 @@ public class OrderService {
         String jwt = token.substring(7);
         String username = jwtService.extractUsername(jwt);
         Set<SendingOrder> activeOrders = orderRepository.findAllByCustomerUsername(username);
-        return new ResponseEntity<>(activeOrders,HttpStatus.OK);
+        return new ResponseEntity<>(activeOrders, HttpStatus.OK);
     }
 
     /**

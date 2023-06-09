@@ -1,12 +1,10 @@
 package com.netcracker.dataservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.dataservice.model.*;
 import com.netcracker.dataservice.repositories.OrderRepository;
 import com.netcracker.dataservice.repositories.ScheduleRepository;
 import com.netcracker.dataservice.service.converters.CsvParser;
-import dto.AdTypes;
 import dto.SendStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +23,6 @@ public class UpdateService {
     @Value("${service.max_retries_count}")
     private Integer maxRetriesCount;
     private final CsvParser csvParser;
-    private final ObjectMapper mapper;
     private final OrderRepository orderRepository;
     private final ScheduleRepository scheduleRepository;
 
@@ -36,44 +33,6 @@ public class UpdateService {
         this.csvParser = csvParser;
         this.orderRepository = orderRepository;
         this.scheduleRepository = scheduleRepository;
-        this.mapper = new ObjectMapper();
-    }
-
-    /**
-     * Обновляет конфиг и сохраяняет обновлённую версию в дб
-     *
-     * @param updatedOrder
-     * @param id
-     * @return
-     */
-    public ResponseEntity<SendingOrder> updateOrder(String updatedOrder, String id) {
-        Optional<SendingOrder> optionalOrder = orderRepository.findById(UUID.fromString(id));
-        if (optionalOrder.isPresent()) {
-            try {
-                SendingOrder presendOrder = optionalOrder.get();
-                SendingOrder newOrder = mapper.readValue(updatedOrder, SendingOrder.class);
-                if (newOrder.getName() != null) {
-                    presendOrder.setName(newOrder.getName());
-                }
-                if (newOrder.getEmailAdvertisement() != null) {
-                    presendOrder.setEmailAdvertisement(newOrder.getEmailAdvertisement());
-                }
-                if (newOrder.getSmsAdvertisement() != null) {
-                    presendOrder.setSmsAdvertisement(newOrder.getSmsAdvertisement());
-                }
-                if (newOrder.getMessengerAdvertisement() != null) {
-                    presendOrder.setMessengerAdvertisement(newOrder.getMessengerAdvertisement());
-                }
-                if (newOrder.getSendTypes() != null) {
-                    presendOrder.setSendTypes(newOrder.getSendTypes());
-                }
-                orderRepository.save(presendOrder);
-                return new ResponseEntity<>(presendOrder, HttpStatus.OK);
-            } catch (JsonProcessingException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -100,49 +59,6 @@ public class UpdateService {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Удаляет всех клиентов из конфига
-     *
-     * @param id - id конфига
-     */
-//    public void deleteClientByOrderId(UUID id) {
-//        Optional<SendingOrder> optionalOrder = orderRepository.findById(id);
-//        if (optionalOrder.isPresent()) {
-//            SendingOrder order = optionalOrder.get();
-//            MailingList mailingList = order.getMailingList();
-//            order.getClients().removeAll(clients);
-//            orderRepository.save(order);
-//        }
-//    }
-
-    /**
-     * Удаляет рекламу указанного типа из конфига
-     *
-     * @param orderId - id конфига
-     * @param type    - тип рекламы
-     */
-    public void deleteAdvertisementByOrderIdAndType(UUID orderId, AdTypes type) {
-        Optional<SendingOrder> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isPresent()) {
-            SendingOrder order = optionalOrder.get();
-            switch (type) {
-                case SMS:
-                    order.setSmsAdvertisement(null);
-                    orderRepository.save(order);
-                    break;
-                case EMAIL:
-                    order.setEmailAdvertisement(null);
-                    orderRepository.save(order);
-                    break;
-                case MESSENGER:
-                    order.setMessengerAdvertisement(null);
-                    orderRepository.save(order);
-                    break;
-                default:
-                    System.out.println("Указанного типа не существует");
-            }
-        }
-    }
 
     /**
      * Обновляет статус конфига (WAITING,PROCESSED,FAILED)

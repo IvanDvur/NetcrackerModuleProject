@@ -22,17 +22,6 @@ public class UpdateOrderController {
         this.updateService = updateService;
     }
 
-    /**
-     * Изменяет тело конфига
-     * @param updatedOrder - изменённый конфиг
-     * @param id id изменяемого конфига
-     * @return
-     */
-    @PatchMapping("/order/{id}")
-    public ResponseEntity<SendingOrder> updateConfig(@RequestBody String updatedOrder,
-                                                     @PathVariable("id") String id) {
-        return updateService.updateOrder(updatedOrder, id);
-    }
 
     /**
      * Изменяет список клиентов (Добавление новых клиентов к уже существующим)
@@ -45,18 +34,4 @@ public class UpdateOrderController {
                                                       @PathVariable("id") String id) {
         return updateService.updateClients(file, id);
     }
-
-
-    /**
-     * Удаляет рекламу заданного типа из конфига и из дб
-     * @param orderId - id конфига, рекламу которого нужно удалить
-     * @param type - тип рекламы (SMS,EMAIL,MESSENGER)
-     */
-    @DeleteMapping("/deleteAd/{orderId}/{type}")
-    public void deleteAdvetisementByConfigId(@PathVariable("orderId") UUID orderId,
-                                             @PathVariable("type") AdTypes type){
-        updateService.deleteAdvertisementByOrderIdAndType(orderId,type);
-    }
-
-
 }

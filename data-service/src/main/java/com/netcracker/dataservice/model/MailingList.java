@@ -25,7 +25,6 @@ public class MailingList {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "mailing_list_id")
-
     private Set<Client> clients;
 
     @JsonIgnore

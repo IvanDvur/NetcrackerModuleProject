@@ -33,9 +33,6 @@ public class ExpiredMessageService {
             }if(smsStatus.equals(SendStatus.EXPIRED)){
                 retryTypes.add("SMS");
             }
-//            else {
-//                retryTypes.add("MESSENGER");
-//            }
             expiredDtos.add(FailedDto.convertToDto(schedule.getOrder(),schedule.getId().toString(),retryTypes));
         });
         return new ResponseEntity<>(expiredDtos, HttpStatus.OK);

@@ -35,23 +35,12 @@ public class Client {
     @CsvBindByName(column = "EMAIL")
     private String email;
 
-    @CsvBindByName(column = "GENDER")
-    private Boolean gender;
-
     @CsvBindByName(column = "PHONE_NUMBER")
     private String phoneNumber;
 
-    @CsvBindByName(column = "BIRTHDAY")
-    private String birthDay;
-
-    @CsvBindByName(column = "COUNTRY_CODE")
-    private Integer countryCode;
-
-    @CsvBindByName(column = "CITY")
-    private String city;
-
     @CsvBindByName(column = "PROPERTIES")
     private String properties;
+
 
     /**
      * Метод equals переопределён для сравнения клиентов по номеру телефона и email, при добавлении новых клиентов
@@ -73,7 +62,7 @@ public class Client {
     }
 
     public ClientDto convertToDto() {
-        return new ClientDto(this.firstName, this.email, this.phoneNumber, parseProperties());
+        return new ClientDto(String.valueOf(this.id),this.firstName, this.email, this.phoneNumber, parseProperties());
     }
 
     private Map<String, String> parseProperties() {
