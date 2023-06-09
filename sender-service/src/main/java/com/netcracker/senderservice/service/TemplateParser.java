@@ -15,7 +15,6 @@ public class TemplateParser {
 
     private Configuration configuration;
 
-
     @Autowired
     public TemplateParser(Configuration configuration) {
         this.configuration=configuration;

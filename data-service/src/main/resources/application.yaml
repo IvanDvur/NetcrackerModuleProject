@@ -6,9 +6,12 @@ spring:
           google:
             client-id: 115939869668-iug85iudcmev0koj3dcgnhovn999240h.apps.googleusercontent.com
             client-secret: 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
+  mvc:
+    pathmatch:
+       matching-strategy: ant_path_matcher
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     database: postgresql
   datasource:
     driver-class-name: org.postgresql.Driver

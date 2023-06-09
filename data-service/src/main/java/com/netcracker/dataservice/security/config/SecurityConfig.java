@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/auth/**", "/order/**", "/schedule/**", "/failedOrder/**", "/expired/**", "/import", "/demo-controller/**", "/oauth/**")//whitelist
+                .antMatchers("/auth/**", "/order/**", "/schedule/**", "/failedOrder/**", "/expired/**", "/import", "/demo-controller/**", "/oauth/**","/v2/api-docs")//whitelist
                 .permitAll()
                 .anyRequest()
                 .authenticated()

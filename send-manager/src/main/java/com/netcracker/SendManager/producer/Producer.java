@@ -23,19 +23,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class Producer {
-
-    private final KafkaTemplate<String, GenericDto> kafkaTemplate;
-    private RestTemplate restTemplate;
-
     @Value("${rest.callback_generic_address}")
     private String callbackUrl;
+    private final KafkaTemplate<String, GenericDto> kafkaTemplate;
+    private RestTemplate restTemplate;
     private Logger log = LoggerFactory.getLogger(Producer.class);
     @Autowired
     public Producer(KafkaTemplate<String, GenericDto> kafkaTemplate, RestTemplate restTemplate) {
         this.kafkaTemplate = kafkaTemplate;
         this.restTemplate = restTemplate;
     }
-
     public void sendMessage(GenericDto dto, String topic) {
         kafkaTemplate.send(topic, dto).addCallback(new ListenableFutureCallback<>() {
 
@@ -66,6 +63,4 @@ public class Producer {
             }
         });
     }
-
-
 }

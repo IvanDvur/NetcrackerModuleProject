@@ -27,9 +27,11 @@ public class SuccessMessageConsumer {
     @KafkaListener(topics = "t.success",groupId = "my_group")
     public void consumeSuccessMessages(UpdateStatusDto dto){
         if(dto.getType().equals(AdTypes.EMAIL)){
-            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"SENT","email"),ResponseEntity.class);
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"SENT","email"),
+                    ResponseEntity.class);
         } else if (dto.getType().equals(AdTypes.SMS)) {
-            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"SENT","sms"),ResponseEntity.class);
+            restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),callbackUrl,"SENT","sms"),
+                    ResponseEntity.class);
         }
     }
 
