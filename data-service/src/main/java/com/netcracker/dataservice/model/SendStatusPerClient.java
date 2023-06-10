@@ -1,18 +1,22 @@
 package com.netcracker.dataservice.model;
 
 import dto.SendStatus;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 public class SendStatusPerClient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  UUID id;
+    private UUID id;
 
     @OneToOne
     private SendingOrder order;

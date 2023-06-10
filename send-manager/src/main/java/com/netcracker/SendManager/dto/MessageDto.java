@@ -13,9 +13,11 @@ import java.util.Set;
 
 @Getter
 @Setter
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MessageDto {
 
+    private String orderId;
     private EmailAdvertisement emailAdvertisement;
     private SmsAdvertisement smsAdvertisement;
     private MessengerAdvertisement messengerAdvertisement;
@@ -24,12 +26,14 @@ public class MessageDto {
     private String sendTypes;
 
     public MessageDto(
+            String orderId,
             EmailAdvertisement emailAdvertisement,
             SmsAdvertisement smsAdvertisement,
             MessengerAdvertisement messengerAdvertisement,
             Set<ClientDto> clientsDtos,
             Set<Schedule> schedule,
             String sendTypes) {
+        this.orderId = orderId;
         this.emailAdvertisement = emailAdvertisement;
         this.smsAdvertisement = smsAdvertisement;
         this.messengerAdvertisement = messengerAdvertisement;

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderDto {
 
+    private String orderId;
     private EmailDto emailAdvertisement;
     private SmsAdvertisement smsAdvertisement;
     private MessengerAdvertisement messengerAdvertisement;
@@ -31,16 +32,12 @@ public class OrderDto {
      * @return
      */
     public static OrderDto convertToDto(SendingOrder order, Set<Schedule> timeToSend) {
-        /**
-         * Преобразуем полную информацию о клиентах в dto
-         */
+
         Set<ClientDto> clientDto = order.getMailingList().getClients().stream()
                 .map(Client::convertToDto)
                 .collect(Collectors.toSet());
-        /**
-         * Возвращаем конфиг dto на основе информации из тела конфига и dto клиентов
-         */
-        return new OrderDto(EmailDto.convertToDto(order.getEmailAdvertisement()),
+
+        return new OrderDto(String.valueOf(order.getId()),EmailDto.convertToDto(order.getEmailAdvertisement()),
                 order.getSmsAdvertisement(),
                 order.getMessengerAdvertisement(),
                 clientDto, order.getSendTypes(), timeToSend);

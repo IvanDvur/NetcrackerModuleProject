@@ -7,13 +7,12 @@ import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EmailAdvertisement implements AdvertismentInterface{
-    private String text;
+
     private String template;
     private String topic;
     private File image;
-    private Map<String,String> placeholders;
+
     public EmailAdvertisement(String text, String template, String topic, File image) {
-        this.text = text;
         this.template = template;
         this.topic = topic;
         this.image = image;
@@ -22,21 +21,6 @@ public class EmailAdvertisement implements AdvertismentInterface{
     public EmailAdvertisement() {
     }
 
-    public Map<String, String> getPlaceholders() {
-        return placeholders;
-    }
-
-    public void setPlaceholders(Map<String, String> placeholders) {
-        this.placeholders = placeholders;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 
     public String getTemplate() {
         return template;

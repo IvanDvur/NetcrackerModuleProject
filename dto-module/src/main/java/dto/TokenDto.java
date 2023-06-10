@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.dto;
+package dto;
 
 public class TokenDto {
     String value;

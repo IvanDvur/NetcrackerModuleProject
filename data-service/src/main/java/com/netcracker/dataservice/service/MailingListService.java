@@ -44,11 +44,9 @@ public class MailingListService {
                 mailingListRepository.delete(listToDelete);
             }
         }
-
     }
 
     public ResponseEntity<MailingListDto> getMailingListById(String id) {
-
         MailingList mailingList = mailingListRepository.findById(UUID.fromString(id)).get();
         return ResponseEntity.ok(MailingListDto.convertMailingListToDto(mailingList));
     }

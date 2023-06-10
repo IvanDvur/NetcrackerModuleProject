@@ -13,10 +13,7 @@ public class KafkaTask implements Runnable {
     private final MessageDto messageDto;
     private final Schedule schedule;
 
-    public KafkaTask(Producer producer,
-                     OrderScheduler orderScheduler,
-                     MessageDto messageDto,
-                     Schedule schedule) {
+    public KafkaTask(Producer producer, OrderScheduler orderScheduler, MessageDto messageDto, Schedule schedule) {
         this.producer = producer;
         this.orderScheduler = orderScheduler;
         this.messageDto = messageDto;
@@ -40,7 +37,7 @@ public class KafkaTask implements Runnable {
             switch (sendType) {
                 case "SMS":
                     producer.sendMessage(
-                            new GenericDto(
+                            new GenericDto(messageDto.getOrderId(),
                                     messageDto.getSmsAdvertisement(),
                                     messageDto.getClientsDtos(),
                                     schedule.getId().toString()),
@@ -48,7 +45,7 @@ public class KafkaTask implements Runnable {
                     break;
                 case "EMAIL":
                     producer.sendMessage(
-                            new GenericDto(
+                            new GenericDto(messageDto.getOrderId(),
                                     messageDto.getEmailAdvertisement(),
                                     messageDto.getClientsDtos(),
                                     schedule.getId().toString()),
@@ -56,7 +53,8 @@ public class KafkaTask implements Runnable {
                     break;
                 case "MESSENGER":
                     producer.sendMessage(
-                            new GenericDto(messageDto.getMessengerAdvertisement(),
+                            new GenericDto(messageDto.getOrderId(),
+                                    messageDto.getMessengerAdvertisement(),
                                     messageDto.getClientsDtos(),
                                     schedule.getId().toString()),
                             "t.messenger");

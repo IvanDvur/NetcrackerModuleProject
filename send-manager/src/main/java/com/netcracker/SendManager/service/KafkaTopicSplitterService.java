@@ -79,10 +79,9 @@ public class KafkaTopicSplitterService {
             for (FailedDto failedDto :data){
                 failedDto.getRetryTypes().forEach(type -> {
                     restTemplate.put(GenericDto.prepareStatusUrl(failedDto.getScheduleId(),callbackUrl,"PROCESSED",type.toLowerCase()),ResponseEntity.class);
-                    producer.sendMessage(new GenericDto<>(failedDto.getAdvertisment(type),
+                    producer.sendMessage(new GenericDto<>(failedDto.getOrderId(),failedDto.getAdvertisment(type),
                             failedDto.getClientsDtos(),failedDto.getScheduleId()),"t."+type.toLowerCase());
                 });
-
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();

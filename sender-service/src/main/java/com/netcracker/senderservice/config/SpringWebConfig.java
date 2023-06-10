@@ -13,7 +13,10 @@ import java.net.http.HttpClient;
 
 public class SpringWebConfig implements WebMvcConfigurer {
 
-
+    @Bean
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
+    }
 
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
@@ -21,7 +24,6 @@ public class SpringWebConfig implements WebMvcConfigurer {
         resolver.setCache(true);
         resolver.setPrefix("");
         resolver.setSuffix(".ftlh");
-
         return resolver;
     }
 

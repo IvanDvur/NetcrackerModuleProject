@@ -5,7 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.netcracker.dataservice.dto.TokenDto;
+import dto.TokenDto;
 import com.netcracker.dataservice.model.Customer;
 import com.netcracker.dataservice.model.Role;
 import com.netcracker.dataservice.security.JwtService;
@@ -34,7 +34,6 @@ public class OauthController {
 
     @Value("kasdjhfkadhsY776ggTyUU65khaskdjfhYuHAwjñlji")
     String secretPsw;
-
 
     @Autowired
     PasswordEncoder passwordEncoder;

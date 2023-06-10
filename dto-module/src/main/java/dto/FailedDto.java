@@ -12,9 +12,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class FailedDto {
 
+    private String orderId;
     private EmailAdvertisement emailAdvertisement;
     private SmsAdvertisement smsAdvertisement;
     private MessengerAdvertisement messengerAdvertisement;

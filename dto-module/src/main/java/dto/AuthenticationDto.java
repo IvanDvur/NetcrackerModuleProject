@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.dto;
+package dto;
 
 
 import lombok.AllArgsConstructor;

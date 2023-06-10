@@ -1,6 +1,6 @@
 package com.netcracker.dataservice.controllers.api;
 
-import com.netcracker.dataservice.dto.AuthenticationDto;
+import dto.AuthenticationDto;
 import com.netcracker.dataservice.repositories.CustomerRepository;
 import com.netcracker.dataservice.security.AuthenticationResponse;
 import com.netcracker.dataservice.dto.RegistrationDto;

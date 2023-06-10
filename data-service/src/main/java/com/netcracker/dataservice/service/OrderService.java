@@ -115,7 +115,6 @@ public class OrderService {
                 SendStatus.WAITING, SendStatus.WAITING);
         Set<SendingOrder> orders = schedules.stream().map(x -> x.getOrder()).collect(Collectors.toSet());
         List<OrderDto> orderDtos = new ArrayList<>();
-
         for (SendingOrder c : orders) {
             Set<Schedule> timeToSend = c.getSchedule()
                     .stream()
