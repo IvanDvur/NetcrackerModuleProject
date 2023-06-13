@@ -5,7 +5,11 @@ import com.netcracker.dataservice.repositories.SendStatusPerClientRepository;
 import dto.SendStatus;
 import dto.StatusPerClientUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,4 +31,8 @@ public class StatusPerClientUpdateService {
        repository.saveAll(statusPerClientList);
     }
 
+
+    public ResponseEntity<List<SendStatusPerClient>> getStatusesByOrderId(String id) {
+       return new ResponseEntity<>(repository.findAllByOrderId(UUID.fromString(id)), HttpStatus.OK);
+    }
 }

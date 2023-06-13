@@ -10,4 +10,7 @@ public interface SendStatusPerClientRepository extends JpaRepository<SendStatusP
 
 
     List<SendStatusPerClient> findAllByOrderIdAndClientIdIsIn(UUID orderId,List<UUID> clientIds);
+    List<SendStatusPerClient> findAllByOrderId(UUID id);
+
+
 }

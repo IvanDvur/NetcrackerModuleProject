@@ -22,7 +22,6 @@ import java.util.UUID;
 public class SendingOrder {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
