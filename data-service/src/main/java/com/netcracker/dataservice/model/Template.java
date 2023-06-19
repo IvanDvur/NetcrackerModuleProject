@@ -4,8 +4,6 @@ package com.netcracker.dataservice.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.UUID;
@@ -20,5 +18,7 @@ public class Template {
     private UUID id;
 
     private UUID userId;
+
+    private String filePath;
 
 }

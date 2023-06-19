@@ -42,14 +42,14 @@ public class OrderService {
             String username = jwtService.extractUsername(jwt);
             SendingOrder order = mapper.readValue(orderDto, SendingOrder.class);
             JsonNode jsonNodeRoot = mapper.readTree(orderDto);
-            JsonNode jsonNodeListId = jsonNodeRoot.get("mailingListId");
-            String listId = jsonNodeListId.asText();
-
+            String listId = jsonNodeRoot.get("mailingListId").asText();
+            String name = jsonNodeRoot.get("name").asText();
             Optional<Customer> customer = customerRepository.findByUsername(username);
             if (customer.isPresent()) {
                 Set<SendStatusPerClient> sendStatusesPerClient = new HashSet<>();
                 MailingList mailingList = mailingListRepository.findById(UUID.fromString(listId)).get();
                 order.setMailingList(mailingList);
+                order.setName(name);
                 order.setCustomer(customer.get());
                 orderRepository.save(order);
                 for (Client client : mailingList.getClients()) {

@@ -24,7 +24,6 @@ public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private UUID id;
 
     @CsvBindByName(column = "FIRST_NAME")
