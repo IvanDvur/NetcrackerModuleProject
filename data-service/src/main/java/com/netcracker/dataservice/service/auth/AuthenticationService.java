@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.service;
+package com.netcracker.dataservice.service.auth;
 
 import dto.AuthenticationDto;
 import com.netcracker.dataservice.repositories.CustomerRepository;
@@ -9,6 +9,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,8 @@ public class AuthenticationService {
         );
         var customer = customerRepository.findByUsername(authenticationDto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        customer.setLastLogin(LocalDateTime.now());
+        customerRepository.save(customer);
         var jwtToken = jwtService.generateToken(customer);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }

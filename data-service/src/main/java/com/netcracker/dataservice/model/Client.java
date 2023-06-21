@@ -41,6 +41,9 @@ public class Client {
     @CsvBindByName(column = "PROPERTIES")
     private String properties;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "client",cascade = CascadeType.ALL,orphanRemoval = true)
+    private SendStatusPerClient status;
 
     /**
      * Метод equals переопределён для сравнения клиентов по номеру телефона и email, при добавлении новых клиентов

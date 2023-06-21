@@ -2,6 +2,7 @@ package com.netcracker.dataservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -38,5 +39,12 @@ public class MailingList {
         this.name = name;
         this.clients = clients;
         this.customer = customer;
+    }
+
+    @Override
+    public String toString() {
+        return "MailingList{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

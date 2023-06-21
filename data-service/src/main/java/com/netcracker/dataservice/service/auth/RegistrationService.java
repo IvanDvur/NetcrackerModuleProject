@@ -1,4 +1,4 @@
-package com.netcracker.dataservice.service;
+package com.netcracker.dataservice.service.auth;
 
 
 import com.netcracker.dataservice.model.Customer;
@@ -12,15 +12,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class RegistrationService{
+public class RegistrationService {
 
 
     private final CustomerRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
     public AuthenticationResponse registerNewUserAccount(RegistrationDto registrationDto) {
 
         Customer customer = Customer
@@ -29,6 +33,7 @@ public class RegistrationService{
                 .email(registrationDto.getEmail())
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
                 .role(Role.USER)
+                .lastLogin(LocalDateTime.now())
                 .build();
         repository.save(customer);
         var jwtToken = jwtService.generateToken(customer);
