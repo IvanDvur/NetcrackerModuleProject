@@ -1,6 +1,7 @@
 package com.netcracker.dataservice.service;
 
 import com.netcracker.dataservice.model.Customer;
+import com.netcracker.dataservice.model.TariffConfig;
 import com.netcracker.dataservice.model.Template;
 import com.netcracker.dataservice.repositories.CustomerRepository;
 import com.netcracker.dataservice.repositories.TemplateRepository;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,10 +50,13 @@ public class TemplateService {
         return new ResponseEntity<>(clientTemplates, HttpStatus.OK);
     }
 
-    public void saveTemplate(String token, String htmlFile, String jsonFile) {
+    public ResponseEntity<Void> saveTemplate(String token, String htmlFile, String jsonFile) {
         Customer customer = getCustomerFromJwt(token);
         if (customer == null) {
-            return;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        if(!checkTariff(customer)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         UUID templateId = UUID.randomUUID();
         File saveDir = new File(basedir + File.separator + customer.getId() + File.separator + templateId);
@@ -68,6 +71,7 @@ public class TemplateService {
             htmlConverter.convertToImage(htmlFile, imageFilePath);
             htmlBw.write(htmlFile);
             jsonBw.write(jsonFile);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -75,6 +79,7 @@ public class TemplateService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     private Customer getCustomerFromJwt(String token) {
@@ -148,5 +153,18 @@ public class TemplateService {
             }
         }
         return directoryToBeDeleted.delete();
+    }
+
+    private boolean checkTariff(Customer customer) {
+        int nbOfTemlates = templateRepository.findAllByUserId(customer.getId()).size();
+        switch (customer.getRole()) {
+            case USER:
+                return nbOfTemlates < TariffConfig.FREE_MAX_TEMPLATES;
+            case USER_PLUS:
+                return nbOfTemlates < TariffConfig.PLUS_MAX_TEMPLATES;
+            case USER_PREMIUM:
+                return nbOfTemlates < TariffConfig.PREMIUM_MAX_TEMPLATES;
+        }
+        return false;
     }
 }

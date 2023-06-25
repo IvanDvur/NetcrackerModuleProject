@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -36,7 +36,9 @@ public class RegistrationService {
                 .lastLogin(LocalDateTime.now())
                 .build();
         repository.save(customer);
-        var jwtToken = jwtService.generateToken(customer);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role","USER");
+        var jwtToken = jwtService.generateToken(extraClaims,customer);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 

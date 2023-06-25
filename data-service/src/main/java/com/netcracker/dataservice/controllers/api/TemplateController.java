@@ -4,6 +4,7 @@ import com.netcracker.dataservice.model.Template;
 import com.netcracker.dataservice.service.TemplateService;
 import dto.TemplateDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +20,10 @@ public class TemplateController {
     private final TemplateService templateService;
 
     @PostMapping("/save")
-    public void saveTemplate(@RequestHeader("Authorization") String token,
-                             @RequestParam("htmlFile") String htmlFile,
-                             @RequestParam("jsonFile") String jsonFile) {
-        templateService.saveTemplate(token, htmlFile, jsonFile);
+    public ResponseEntity<Void> saveTemplate(@RequestHeader("Authorization") String token,
+                                                   @RequestParam("htmlFile") String htmlFile,
+                                                   @RequestParam("jsonFile") String jsonFile) {
+        return templateService.saveTemplate(token, htmlFile, jsonFile);
     }
 
     @GetMapping("/get")

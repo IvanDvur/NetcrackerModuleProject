@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class GoogleAuthService {
@@ -75,7 +77,9 @@ public class GoogleAuthService {
                 new UsernamePasswordAuthenticationToken(customer.getEmail(), secretPsw)
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtProvider.generateToken(customer);
+        Map<String,Object> extraClaims = new HashMap<>();
+        extraClaims.put("role",customer.getRole());
+        String jwt = jwtProvider.generateToken(extraClaims,customer);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setValue(jwt);
         return tokenDto;
