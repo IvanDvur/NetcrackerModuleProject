@@ -15,7 +15,7 @@ public class HtmlToImageConverter {
             bw.write(html);
         }
         Process wkhtml; // Create uninitialized process
-        String command = String.format("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe --quality 10 %s %s ",tempFile.getAbsolutePath(),outputPath); // Desired command
+        String command = String.format("wkhtmltoimage --quality 10 %s %s ",tempFile.getAbsolutePath(),outputPath); // Desired command
         wkhtml = Runtime.getRuntime().exec(command); // Start process
         IOUtils.copy(wkhtml.getErrorStream(), System.err); // Print output to console
         wkhtml.waitFor(); // Allow process to run
