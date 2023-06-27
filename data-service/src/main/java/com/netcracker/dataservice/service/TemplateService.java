@@ -26,7 +26,7 @@ import java.util.UUID;
 public class TemplateService {
     private final TemplateRepository templateRepository;
     private final CustomerRepository customerRepository;
-    private String basedir = "D:/templates";
+    private String basedir = "/app/templates";
     private final JwtService jwtService;
     private final HtmlToImageConverter htmlConverter;
 
