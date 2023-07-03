@@ -27,8 +27,8 @@ public class SmsSender {
         try {
             // Задаем параметры запроса
             MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-            requestBody.add("login", "Sotlint");
-            requestBody.add("psw", "6qJLab3b");
+            requestBody.add("login", "IvanDvur");
+            requestBody.add("psw", "fAa-7EY-3fv-G5z");
             requestBody.add("time", "0");
             requestBody.add("mes", smsAdvertisement.getText());
 
