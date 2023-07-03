@@ -19,7 +19,7 @@ public class ImportController {
     }
 
     @PostMapping
-    public ResponseEntity<MailingList> importClients(@RequestParam(value = "file",required = true) MultipartFile file,
+    public ResponseEntity<String> importClients(@RequestParam(value = "file",required = true) MultipartFile file,
                                                      @RequestParam("name") String name,
                                                      @RequestHeader("Authorization") String token) {
         return importService.createMailingList(name,file,token);

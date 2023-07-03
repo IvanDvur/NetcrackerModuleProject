@@ -41,6 +41,7 @@ public class MailingListService {
                 listToDelete.setCustomer(null);
                 mailingListRepository.save(listToDelete);
             } else {
+                listToDelete.setCustomer(null);
                 mailingListRepository.delete(listToDelete);
             }
         }

@@ -45,7 +45,11 @@ public class SmsSender {
             // Отправляем запрос на указанный URL с заданными параметрами и получаем ответ в виде строки
             ResponseEntity<String> response = restTemplate.exchange("https://smsc.ru/sys/send.php", HttpMethod.POST, entity, String.class);
             System.out.println("Response: " + response.getBody());
-            producer.sendMessage("t.success",updateStatusDto);
+            if(response.getBody().contains("ERROR")){
+                producer.sendMessage("t.error",updateStatusDto);
+            }else{
+                producer.sendMessage("t.success",updateStatusDto);
+            }
         } catch (RestClientException e) {
             producer.sendMessage("t.error",updateStatusDto);
             e.printStackTrace();

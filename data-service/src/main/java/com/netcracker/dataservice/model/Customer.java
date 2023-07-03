@@ -38,7 +38,7 @@ public class Customer implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE, orphanRemoval = true,fetch = FetchType.EAGER)
     @Cascade(value = {org.hibernate.annotations.CascadeType.DELETE})
     private List<MailingList> mailingLists;
 

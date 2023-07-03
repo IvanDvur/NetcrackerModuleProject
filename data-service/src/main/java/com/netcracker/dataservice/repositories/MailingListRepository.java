@@ -14,6 +14,9 @@ public interface MailingListRepository extends JpaRepository<MailingList, UUID> 
     @Query("select ml.clients from MailingList ml where ml.id=:id")
     Set<Client> getAllClientsByMailingListId(UUID id);
 
-    Set<MailingList> findAllByCustomerUsername(String username);
+    Set<MailingList> findAllByCustomerId(UUID id);
+    Set<MailingList> findAllByCustomerUsername(String id);
+
+    boolean existsByCustomerIdAndName(UUID id, String name);
 
 }
