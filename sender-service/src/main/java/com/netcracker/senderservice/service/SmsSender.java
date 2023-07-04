@@ -33,7 +33,14 @@ public class SmsSender {
             requestBody.add("mes", smsAdvertisement.getText());
 
             for (ClientDto clientDto : dto.getClientDtoSet()) {
+                if(clientDto.getPhoneNumber()==null){
+                    continue;
+                }
                 requestBody.add("phones", clientDto.getPhoneNumber() + ";");
+            }
+            if(requestBody.get("phones")==null){
+                producer.sendMessage("t.error",updateStatusDto);
+                return;
             }
             // Формируем заголовки запроса
             HttpHeaders headers = new HttpHeaders();
