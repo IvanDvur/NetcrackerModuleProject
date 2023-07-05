@@ -49,7 +49,7 @@ public class MailSender {
 
             for (ClientDto clientDto : dto.getClientDtoSet()) {
                 if (clientIdList.size() > 50) {
-                    restTemplate.postForObject("http://data-service:8080/statusPerClient",
+                    restTemplate.postForObject("http://data-service:8080/statusPerClient/emailPerClientStatus",
                             new StatusPerClientUpdateRequest(dto.getOrderId(), clientIdList), ResponseEntity.class);
                     clientIdList.clear();
                 }
@@ -60,7 +60,7 @@ public class MailSender {
                 System.out.println("Email has been sent to " + clientDto.getEmail());
                 clientIdList.add(clientDto.getId());
             }
-            restTemplate.postForObject("http://data-service:8080/statusPerClient",
+            restTemplate.postForObject("http://data-service:8080/statusPerClient/emailPerClientStatus",
                     new StatusPerClientUpdateRequest(dto.getOrderId(), clientIdList), ResponseEntity.class);
             //Апдейтим статус через кафку
             producer.sendMessage("t.success", updateStatusDto);

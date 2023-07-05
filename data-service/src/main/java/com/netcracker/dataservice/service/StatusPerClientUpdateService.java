@@ -22,13 +22,23 @@ public class StatusPerClientUpdateService {
 
     private final SendStatusPerClientRepository repository;
 
-    public void updateStatuses(StatusPerClientUpdateRequest request) {
+    public void updateEmailStatuses(StatusPerClientUpdateRequest request) {
         List<UUID> clientUUIDIds = request.getClientsID().stream().map(UUID::fromString).collect(Collectors.toList());
        List<SendStatusPerClient> statusPerClientList =
                repository.findAllByOrderIdAndClientIdIsIn(UUID.fromString(request.getOrderId()),clientUUIDIds);
 
        statusPerClientList.forEach(s->s.setEmailStatusPerClient(SendStatus.SENT));
        repository.saveAll(statusPerClientList);
+    }
+
+
+    public void updateSmsStatuses(StatusPerClientUpdateRequest request) {
+        List<UUID> clientUUIDIds = request.getClientsID().stream().map(UUID::fromString).collect(Collectors.toList());
+        List<SendStatusPerClient> statusPerClientList =
+                repository.findAllByOrderIdAndClientIdIsIn(UUID.fromString(request.getOrderId()),clientUUIDIds);
+
+        statusPerClientList.forEach(s->s.setSmsStatusPerClient(SendStatus.SENT));
+        repository.saveAll(statusPerClientList);
     }
 
 

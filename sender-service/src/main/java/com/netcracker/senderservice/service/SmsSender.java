@@ -3,6 +3,7 @@ package com.netcracker.senderservice.service;
 
 import com.netcracker.senderservice.producer.Producer;
 import dto.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -11,57 +12,58 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 @Component
+@RequiredArgsConstructor
 public class SmsSender {
 
-    private Producer producer;
+    private final Producer producer;
+    private final RestTemplate restTemplate;
 
-    public SmsSender(Producer producer) {
-        this.producer = producer;
-    }
 
     public void send(GenericDto<SmsAdvertisement> dto) {
         SmsAdvertisement smsAdvertisement = dto.getAdvertisement();
         UpdateStatusDto updateStatusDto = new UpdateStatusDto(dto.getScheduleId(), AdTypes.SMS);
+        StringBuilder stringBuilder = new StringBuilder();
         try {
-            // Задаем параметры запроса
-            MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-            requestBody.add("login", "IvanDvur");
-            requestBody.add("psw", "fAa-7EY-3fv-G5z");
-            requestBody.add("time", "0");
-            requestBody.add("mes", smsAdvertisement.getText());
-
             for (ClientDto clientDto : dto.getClientDtoSet()) {
-                if(clientDto.getPhoneNumber()==null){
+                if (clientDto.getPhoneNumber().trim().length()==0) {
                     continue;
                 }
-                requestBody.add("phones", clientDto.getPhoneNumber() + ";");
+                stringBuilder.append(clientDto.getPhoneNumber() + ";");
             }
-            if(requestBody.get("phones")==null){
-                producer.sendMessage("t.error",updateStatusDto);
-                return;
+
+            if(stringBuilder.toString().length() == 0){
+                restTemplate.put(GenericDto.prepareStatusUrl(dto.getScheduleId(),"http://data-service:8080","Fatal","sms"),ResponseEntity.class);
             }
-            // Формируем заголовки запроса
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            // Создаем объект RestTemplate для отправки запроса
-            RestTemplate restTemplate = new RestTemplate();
-            // Создаем объект HttpEntity с телом запроса и заголовками
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
-            // Отправляем запрос на указанный URL с заданными параметрами и получаем ответ в виде строки
-            ResponseEntity<String> response = restTemplate.exchange("https://smsc.ru/sys/send.php", HttpMethod.POST, entity, String.class);
-            System.out.println("Response: " + response.getBody());
-            if(response.getBody().contains("ERROR")){
-                producer.sendMessage("t.error",updateStatusDto);
-            }else{
-                producer.sendMessage("t.success",updateStatusDto);
+
+            Smsc sd = new Smsc("IvanDvur", "fAa-7EY-3fv-G5z");
+            String[] response = sd.send_sms(stringBuilder.toString(), smsAdvertisement.getText(), 0, "", "", 0, "", "");
+
+            if (response[0].equals("Ошибка соединения")) {
+                producer.sendMessage("t.error", updateStatusDto);
             }
+
+            List<String> successSms = new ArrayList<>();
+            for (ClientDto clientDto: dto.getClientDtoSet()){
+                String[] report = sd.get_status(Integer.parseInt(response[0]),clientDto.getPhoneNumber(),0);
+                System.out.println(Arrays.toString(report));
+                if(Integer.parseInt(report[0]) == -1){
+                    successSms.add(clientDto.getId());
+                }
+            }
+            restTemplate.postForObject("http://data-service:8080/statusPerClient/smsPerClientStatus",
+                    new StatusPerClientUpdateRequest(dto.getOrderId(), successSms), ResponseEntity.class);
+
+            producer.sendMessage("t.success", updateStatusDto);
         } catch (RestClientException e) {
-            producer.sendMessage("t.error",updateStatusDto);
+            producer.sendMessage("t.error", updateStatusDto);
             e.printStackTrace();
         }
-
 
     }
 }

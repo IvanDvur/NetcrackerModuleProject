@@ -17,9 +17,14 @@ public class StatusPerClientUpdateController {
 
     private final StatusPerClientUpdateService service;
 
-    @PostMapping()
-    public void updateStatus(@RequestBody StatusPerClientUpdateRequest request){
-        service.updateStatuses(request);
+    @PostMapping("/emailPerClientStatus")
+    public void updateEmailStatus(@RequestBody StatusPerClientUpdateRequest request){
+        service.updateEmailStatuses(request);
+    }
+
+    @PostMapping("/smsPerClientStatus")
+    public void updateSmsStatus(@RequestBody StatusPerClientUpdateRequest request){
+        service.updateSmsStatuses(request);
     }
 
     @GetMapping("/{id}")
